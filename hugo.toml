@@ -50,6 +50,12 @@ enableRobotsTXT = true
   identifier = "menu-app"
 
 [[menu.main]]
+  name = "社区"
+  url = "https://api.worldcorner.xyz/community/"
+  weight = 75
+  identifier = "menu-community"
+
+[[menu.main]]
   name = "资产"
   url = "/assets/"
   weight = 80
