@@ -4,12 +4,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>伪需求 | 世界一隅 | 认知能量工程</title>
+<title>伪需求 | 世界一隅</title>
 <meta name="keywords" content="">
 <meta name="description" content="在算法洪流中，守护清醒的微光。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/tags/%E4%BC%AA%E9%9C%80%E6%B1%82/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://worldcorner.xyz/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://worldcorner.xyz/favicon-32x32.png">
@@ -103,6 +103,9 @@
                             aria-label="English">En</a>
                     </li>
                 </ul>
+                <button class="nav-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
         <ul id="menu">
@@ -181,6 +184,17 @@
         </ul>
     </nav>
 </header>
+<script>
+function toggleNav() {
+    var b = document.querySelector('.nav-toggle');
+    var open = document.body.classList.toggle('nav-open');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+document.addEventListener('click', function (e) {
+    if (!document.body.classList.contains('nav-open')) return;
+    if (e.target.closest && e.target.closest('#menu a')) toggleNav();
+});
+</script>
 <main class="main"> 
 <header class="page-header">
   <h1>
@@ -194,7 +208,7 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>伪需求：被替你量产好的“想要” 时代观察 · 独立短文。不需要读过系列任何一篇——这篇从最平常的一句“我想买”讲起。 系列其余篇拆的是“我该信谁”：别人说话算不算数、社会怎么把这份“算数”一年年生产出来。这篇翻到同一台机器给自己供货的另一侧，问一个更往里的问题：连“我自己的想要”，要不要先验一验？ 写作规矩，和系列同款：①这是模型，不是信仰对象；②凡全称判断先自我限定；③只拆机制，不评价买东西的人；④不用私人案例。这篇另加一条：不劝你少买——只把灌装管道指给你看，买不买，是你的账。
+    <p> 时代观察 · 独立短文。不需要读过系列任何一篇——这篇从最平常的一句“我想买”讲起。 系列其余篇拆的是“我该信谁”：别人说话算不算数、社会怎么把这份“算数”一年年生产出来。这篇翻到同一台机器给自己供货的另一侧，问一个更往里的问题：连“我自己的想要”，要不要先验一验？ 写作规矩，和系列同款：①这是模型，不是信仰对象；②凡全称判断先自我限定；③只拆机制，不评价买东西的人；④不用私人案例。这篇另加一条：不劝你少买——只把灌装管道指给你看，买不买，是你的账。
 引子：一块抹布的官司 先讲一个最小的例子。
 哲学家马尔库塞有个概念叫“虚假需要”，刘擎转述时爱拿它举例：厨房纸巾。一块抹布本来够用，市场做出一款“厨房专用纸巾”，再用广告让你相信这是现代生活的标配。你以为是你在想要——其实是有人替你想好了，想好之后还劝你：这不贵。
 这个例子太小，小到你笑一笑就忘。同一条流水线上，还有三个车间，开在你人生贵得多的货架上。
@@ -229,7 +243,7 @@
     </main>
     
 <footer class="footer">
-    <span>&copy; 2026 <a href="https://worldcorner.xyz/">世界一隅 | 认知能量工程</a></span>
+    <span>&copy; 2026 <a href="https://worldcorner.xyz/">世界一隅</a></span>
     <span>
         由
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

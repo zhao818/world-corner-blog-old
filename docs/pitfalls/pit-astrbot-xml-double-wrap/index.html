@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>AstrBot 公众号被动回复 XML 二次包装导致微信无法解析 | 世界一隅 | 认知能量工程</title>
+<title>AstrBot 公众号被动回复 XML 二次包装导致微信无法解析 | 世界一隅</title>
 <meta name="keywords" content="">
 <meta name="description" content="症状
 
@@ -33,7 +33,7 @@ def _reply_text(text: str) -&gt; str:
 怎么做？">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/pitfalls/pit-astrbot-xml-double-wrap/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -353,7 +353,7 @@ def _reply_text(text: str) -&gt; str:
   },
   "publisher": {
     "@type": "Organization",
-    "name": "世界一隅 | 认知能量工程",
+    "name": "世界一隅",
     "logo": {
       "@type": "ImageObject",
       "url": "https:\/\/worldcorner.xyz\/favicon.ico"
@@ -403,6 +403,9 @@ def _reply_text(text: str) -&gt; str:
                             aria-label="English">En</a>
                     </li>
                 </ul>
+                <button class="nav-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
         <ul id="menu">
@@ -481,6 +484,17 @@ def _reply_text(text: str) -&gt; str:
         </ul>
     </nav>
 </header>
+<script>
+function toggleNav() {
+    var b = document.querySelector('.nav-toggle');
+    var open = document.body.classList.toggle('nav-open');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+document.addEventListener('click', function (e) {
+    if (!document.body.classList.contains('nav-open')) return;
+    if (e.target.closest && e.target.closest('#menu a')) toggleNav();
+});
+</script>
 <main class="main">
 <article class="pitfall-single">
   <header class="pitfall-hero">
@@ -544,7 +558,7 @@ def _reply_text(text: str) -&gt; str:
 
   <footer class="pitfall-footer">
     <p><span class="inline-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="8" ry="5"></ellipse><path d="M4 13c0 2.8 3.6 5 8 5s8-2.2 8-5"></path><path d="M9 15h0"></path><path d="M15 10.2L20 3.4"></path></svg></span>
- 这条踩坑对你有用吗？<a href="https://github.com/zhao818/claude-memory/issues/new" target="_blank">报告新踩坑</a></p>
+ 这条踩坑对你有用吗？<a href="https://github.com/zhao818/world-corner-blog/issues/new?title=%5B%E8%B8%A9%E5%9D%91%E6%8A%95%E7%A8%BF%5D+" target="_blank">报告新踩坑</a></p>
     <p><a href="https://worldcorner.xyz/pitfalls/">← 返回踩坑宝典</a></p>
   </footer>
 </article>
@@ -552,7 +566,7 @@ def _reply_text(text: str) -&gt; str:
     </main>
     
 <footer class="footer">
-    <span>&copy; 2026 <a href="https://worldcorner.xyz/">世界一隅 | 认知能量工程</a></span>
+    <span>&copy; 2026 <a href="https://worldcorner.xyz/">世界一隅</a></span>
     <span>
         由
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

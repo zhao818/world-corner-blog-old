@@ -4,12 +4,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>项目管理 | 世界一隅 | 认知能量工程</title>
+<title>项目管理 | 世界一隅</title>
 <meta name="keywords" content="">
 <meta name="description" content="在算法洪流中，守护清醒的微光。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://worldcorner.xyz/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://worldcorner.xyz/favicon-32x32.png">
@@ -103,6 +103,9 @@
                             aria-label="English">En</a>
                     </li>
                 </ul>
+                <button class="nav-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
         <ul id="menu">
@@ -181,6 +184,17 @@
         </ul>
     </nav>
 </header>
+<script>
+function toggleNav() {
+    var b = document.querySelector('.nav-toggle');
+    var open = document.body.classList.toggle('nav-open');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+document.addEventListener('click', function (e) {
+    if (!document.body.classList.contains('nav-open')) return;
+    if (e.target.closest && e.target.closest('#menu a')) toggleNav();
+});
+</script>
 <main class="main"> 
 <header class="page-header">
   <h1>
@@ -194,7 +208,7 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>ACK超时：当施工日报成为无人接收的SOS信号 一个系统最危险的时刻不是它崩溃的那一刻，而是它在崩溃之前，所有的报警信号都被当成背景噪声处理了。
+    <p> 一个系统最危险的时刻不是它崩溃的那一刻，而是它在崩溃之前，所有的报警信号都被当成背景噪声处理了。
 一、预言落地：从36米/天到&#34;暂停施工&#34; 2026年3月28日，我写过一篇关于永德高标准农田项目的文章。当时的计算很明确：DN200 钢管安装 22 天完成 800 米，当前速率 36.4 米/天；剩余 13,600 米，90–120 天内完工需达到 113–151 米/天。效率缺口 4.1 倍。按此速度，管道需要 374 天——到 2027 年 4 月才能完工。
 效率缺口 4.1 倍。结论是：按当前速率，DN200 管道需要 374 天才能完工——到 2027 年 4 月。而那是在天气不下雨的前提下。
 72 天后的 2026 年 6 月 4 日，施工日报上写的已经不是&#34;进度偏慢&#34;了。白纸黑字四个字：“暂停施工”。
@@ -239,7 +253,7 @@ $$v_{90} = \frac{13600}{90} = 151.1 ; \text{米/天}$$ $$v_{120} = \frac{13600}{
     </main>
     
 <footer class="footer">
-    <span>&copy; 2026 <a href="https://worldcorner.xyz/">世界一隅 | 认知能量工程</a></span>
+    <span>&copy; 2026 <a href="https://worldcorner.xyz/">世界一隅</a></span>
     <span>
         由
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
