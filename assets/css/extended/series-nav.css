@@ -542,3 +542,22 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate
         line-height: 1.5;
     }
 }
+
+/* ===== 桌面导航防溢出（P0-3：11+ 药丸在 1024 容器里裁"关于"） ===== */
+#menu {
+    flex-wrap: wrap;              /* 兜底：放不下就换行，永不裁切 */
+    justify-content: flex-end;
+    overflow-x: visible;
+    white-space: normal;
+    row-gap: 6px;
+}
+#menu .nav-btn {
+    padding: 3px 11px;            /* 收紧一档，13 个药丸一行放下 */
+    font-size: 0.85em;
+}
+
+/* ===== 文章页列宽（P1-4）：侧栏 260 + 正文 ~690，中文 32-38 字/行 ===== */
+.main:has(.post-with-sidebar) {
+    max-width: calc(982px + var(--gap) * 2);
+}
+#menu li + li { margin-inline-start: 14px; }

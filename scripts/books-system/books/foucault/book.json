@@ -1,0 +1,15 @@
+{
+  "name": "foucault",
+  "title_cn": "规训与惩罚",
+  "author_cn": "福柯",
+  "mode": "knowledge",
+  "source": "AI知识导读（版权书，无原文）",
+  "cn_titles": {},
+  "pieces": [
+    {"no": 1, "title": "惩罚的变迁：从酷刑到监狱", "knowledge_brief": "福柯《规训与惩罚》开篇：18世纪从公开酷刑到监狱的转变，不是人性化进步，而是权力技术换了形式——从惩罚身体到规训灵魂。", "status": "pending"},
+    {"no": 2, "title": "规训权力：身体如何被塑造", "knowledge_brief": "规训（discipline）：通过时间表、空间隔离、标准化动作塑造顺从的身体。学校、兵营、工厂、医院都是规训机构。", "status": "pending"},
+    {"no": 3, "title": "全景监狱：被看见即被控制", "knowledge_brief": "边沁的全景监狱（Panopticon）：环形监狱中央瞭望塔，囚犯不知是否被看而自我规训。福柯引申：现代社会人人处于被监视的可能中。", "status": "pending"},
+    {"no": 4, "title": "知识即权力：话语的建构", "knowledge_brief": "福柯：知识与权力互相生产。精神病学、犯罪学等'科学'话语本身是权力运作的产物，界定什么是正常/异常。", "status": "pending"},
+    {"no": 5, "title": "自我技术：如何不被规训吞噬", "knowledge_brief": "福柯晚期转向'自我技术'：人如何通过自我关怀、自我书写抵抗规训，在权力网络中保持主体性。", "status": "pending"}
+  ]
+}

@@ -77,6 +77,18 @@ defaultContentLanguage = 'zh'
   weight = 100
   identifier = "menu-about"
 
+[[menu.main]]
+  name = "搜索"
+  url = "/search/"
+  weight = 95
+  identifier = "menu-search"
+
+[[menu.main]]
+  name = "归档"
+  url = "/archives/"
+  weight = 96
+  identifier = "menu-archives"
+
 # ---- 双语言定义 ----
 [languages]
   [languages.zh]
@@ -161,6 +173,18 @@ defaultContentLanguage = 'zh'
     identifier = "menu-skills"
 
   [[languages.en.menu.main]]
+    name = "Search"
+    url = "/en/search/"
+    weight = 95
+    identifier = "menu-search"
+
+  [[languages.en.menu.main]]
+    name = "Archives"
+    url = "/en/archives/"
+    weight = 96
+    identifier = "menu-archives"
+
+  [[languages.en.menu.main]]
     name = "About"
     url = "/en/about/"
     weight = 100
@@ -168,6 +192,7 @@ defaultContentLanguage = 'zh'
 
 [params]
   env = 'production'
+  ShowToc = true
   title = '世界一隅'
   description = '在算法洪流中，守护清醒的微光。'
   DateFormat = '2006年1月2日'
@@ -177,3 +202,6 @@ defaultContentLanguage = 'zh'
     text = '世界一隅'
     icon = '/images/mark.svg'
     iconHeight = 32
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

@@ -1,0 +1,190 @@
+{
+  "book": "The Phenomenology of Spirit (Hegel, Baillie trans.)",
+  "source": "C:\\Users\\zhaot\\Downloads\\Hegel\\Hegel_Phenomenology_of_Spirit_EN.txt",
+  "chapters": 18,
+  "updated_at": "2026-08-04T17:23:22.030647",
+  "pieces": [
+    {
+      "no": 1,
+      "title": "导论 Introduction",
+      "file": "01_导论_Introduction.txt",
+      "lines": 2771,
+      "chars": 138368,
+      "status": "published",
+      "published_at": "2026-08-04T17:58:11.383916",
+      "media_id": "uohiBa_iOzkD2OcZecjBQOtSuK0Y3rdM9pIkXLyz-BjXmeAU4a1kZZULq3Ic0e-i",
+      "article_file": "01_导论_论科学认识.md",
+      "translated_at": "2026-08-04T17:25:10.770526"
+    },
+    {
+      "no": 2,
+      "title": "A. 意识 Consciousness",
+      "file": "02_A_意识_Consciousness.txt",
+      "lines": 2297,
+      "chars": 115436,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 3,
+      "title": "B. 自我意识 Self-Consciousness",
+      "file": "03_B_自我意识_Self_Consciousness.txt",
+      "lines": 1693,
+      "chars": 88176,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 4,
+      "title": "V. 理性 Reason（引论）",
+      "file": "04_V_理性_Reason_引论_.txt",
+      "lines": 317,
+      "chars": 16454,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 5,
+      "title": "A. 观察的理性 Observing Reason",
+      "file": "05_A_观察的理性_Observing_Reason.txt",
+      "lines": 3176,
+      "chars": 165208,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 6,
+      "title": "B. 理性的现实化 Actualization",
+      "file": "06_B_理性的现实化_Actualization.txt",
+      "lines": 1213,
+      "chars": 63205,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 7,
+      "title": "C. 自在而自为的个体性 Individuality",
+      "file": "07_C_自在而自为的个体性_Individuality.txt",
+      "lines": 1309,
+      "chars": 68149,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 8,
+      "title": "VI. 精神 Spirit（引论）",
+      "file": "08_VI_精神_Spirit_引论_.txt",
+      "lines": 146,
+      "chars": 7390,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 9,
+      "title": "A. 真实的精神·伦理秩序 Ethical Order",
+      "file": "09_A_真实的精神_伦理秩序_Ethical_Order.txt",
+      "lines": 1393,
+      "chars": 70133,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 10,
+      "title": "B. 自我异化的精神·教化 Culture",
+      "file": "10_B_自我异化的精神_教化_Culture.txt",
+      "lines": 129,
+      "chars": 7062,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 11,
+      "title": "I. 异化精神的世界 World of Self-Alienation",
+      "file": "11_I_异化精神的世界_World_of_Self_Alienation.txt",
+      "lines": 1526,
+      "chars": 79536,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 12,
+      "title": "II. 启蒙 Enlightenment",
+      "file": "12_II_启蒙_Enlightenment.txt",
+      "lines": 1338,
+      "chars": 70403,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 13,
+      "title": "III. 绝对自由与恐怖 Absolute Freedom",
+      "file": "13_III_绝对自由与恐怖_Absolute_Freedom.txt",
+      "lines": 2677,
+      "chars": 136636,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 14,
+      "title": "VII. 宗教 Religion（引论）",
+      "file": "14_VII_宗教_Religion_引论_.txt",
+      "lines": 342,
+      "chars": 16152,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 15,
+      "title": "A. 自然宗教 Natural Religion",
+      "file": "15_A_自然宗教_Natural_Religion.txt",
+      "lines": 403,
+      "chars": 18863,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 16,
+      "title": "B. 艺术宗教 Art Religion",
+      "file": "16_B_艺术宗教_Art_Religion.txt",
+      "lines": 1482,
+      "chars": 70992,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 17,
+      "title": "C. 天启宗教 Revealed Religion",
+      "file": "17_C_天启宗教_Revealed_Religion.txt",
+      "lines": 1263,
+      "chars": 65551,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    },
+    {
+      "no": 18,
+      "title": "VIII. 绝对知识 Absolute Knowing",
+      "file": "18_VIII_绝对知识_Absolute_Knowing.txt",
+      "lines": 1337,
+      "chars": 64605,
+      "status": "pending",
+      "published_at": null,
+      "media_id": ""
+    }
+  ]
+}

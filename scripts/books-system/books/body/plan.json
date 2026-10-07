@@ -1,0 +1,110 @@
+{
+  "book": "养身体 · 结善缘",
+  "author": "身心社财体系",
+  "source": "AI知识导读（身体硬件+社会网络层）",
+  "chapters": 10,
+  "mode": "knowledge",
+  "updated_at": "2026-08-05T16:29:14.371686",
+  "pieces": [
+    {
+      "no": 1,
+      "title": "睡出好品格：睡眠是品格的第一保障",
+      "knowledge_brief": "睡眠剥夺放大杏仁核反应、破坏情绪调节，人在困时最容易背叛原则。功课：固定作息、睡前断屏。睡不好的人守不住原则。",
+      "status": "published",
+      "article_file": "01_睡出好品格_睡眠是品格的第一保障.md",
+      "translated_at": "2026-08-05T17:12:12.401508",
+      "media_id": "uohiBa_iOzkD2OcZecjBQOubiqdnSGhskBfnQAO9nUfHu3Uey4_uMYre6KS5SBc7",
+      "published_at": "2026-08-06T13:45:44.523125"
+    },
+    {
+      "no": 2,
+      "title": "动出韧劲：运动是韧性的生理训练",
+      "knowledge_brief": "规律运动抗抑郁效果有RCT证据、接近药物疗效。功课：每日活动、每周出汗。运动是在身体里练事上磨练。",
+      "status": "published",
+      "article_file": "02_动出韧劲_运动是韧性的生理训练.md",
+      "translated_at": "2026-08-05T17:14:32.867224",
+      "media_id": "uohiBa_iOzkD2OcZecjBQPQwJA1hc3gmeVmGBM2SRSHiHH2adREsJCMJDeKWvXIV",
+      "published_at": "2026-08-06T13:45:49.877567"
+    },
+    {
+      "no": 3,
+      "title": "吃出好心情：肠-脑轴与饮食",
+      "knowledge_brief": "90%血清素在肠道合成，肠道菌群经神经免疫内分泌与大脑对话。地中海饮食使抑郁减少32-45%。功课：蔬果足量、全谷物稳血糖、正念饮食。",
+      "status": "published",
+      "article_file": "03_吃出好心情_肠_脑轴与饮食.md",
+      "translated_at": "2026-08-05T17:18:25.402069",
+      "media_id": "uohiBa_iOzkD2OcZecjBQLlifXN5yCiFZ8xWbmSbkWTM90ypiAuMGqgZ4KKGqTGT",
+      "published_at": "2026-08-06T13:45:55.139672"
+    },
+    {
+      "no": 4,
+      "title": "走进森林：自然疗愈与连接感",
+      "knowledge_brief": "森林疗法1876人研究：压力-0.71/抑郁-0.68/焦虑-0.77。注意力恢复理论证明自然激活副交感神经。功课：每周固定时间走进自然。",
+      "status": "published",
+      "article_file": "04_走进森林_自然疗愈与连接感.md",
+      "translated_at": "2026-08-05T17:19:40.924158",
+      "media_id": "uohiBa_iOzkD2OcZecjBQOeVteVSyz_9baL3cBEIdGKj8L_5Sf07KpteKnGWv1UH",
+      "published_at": "2026-08-06T13:46:00.520119"
+    },
+    {
+      "no": 5,
+      "title": "光的节律：日照、季节与情绪",
+      "knowledge_brief": "北欧极夜对应SAD季节性情感障碍，光照疗法与维生素D是现实解。冬季主动接触光照。功课：早晨光照、冬季防SAD。",
+      "status": "published",
+      "article_file": "05_光的节律_日照_季节与情绪.md",
+      "translated_at": "2026-08-05T17:23:03.746018",
+      "media_id": "uohiBa_iOzkD2OcZecjBQBpSd-ng3JjpbzJ2VtshV9pljKenPdgvezJTcjvKzZtT",
+      "published_at": "2026-08-06T13:46:06.026115"
+    },
+    {
+      "no": 6,
+      "title": "桑拿的仪式：热中的静定",
+      "knowledge_brief": "热暴露改善心血管+深度放松。把桑拿或热水澡当作身体版事上磨练：在最热的地方静下来。",
+      "status": "published",
+      "article_file": "06_桑拿的仪式_热中的静定.md",
+      "translated_at": "2026-08-05T18:32:52.672677",
+      "media_id": "uohiBa_iOzkD2OcZecjBQOl27Y_rVytHXvJm0762X_wpe-OeK1QXWwRYT8amDQMd",
+      "published_at": "2026-08-06T13:46:11.321706"
+    },
+    {
+      "no": 7,
+      "title": "信任的回报：高信任社会与幸福感",
+      "knowledge_brief": "芬兰高信任社会实证：高信任=低交易成本=高幸福，是好人必然能活的国家级验证。关系质量是幸福第一预测因子（哈佛85年追踪）。",
+      "status": "published",
+      "article_file": "07_信任的回报_高信任社会与幸福感.md",
+      "translated_at": "2026-08-05T17:35:47.116408",
+      "media_id": "uohiBa_iOzkD2OcZecjBQESaxGiRNHgj6enQm1sOPsrQnQG5PdyMSykH_QiLdllS",
+      "published_at": "2026-08-06T13:46:16.622540"
+    },
+    {
+      "no": 8,
+      "title": "利他的幸福：助人者高效应",
+      "knowledge_brief": "利他行为提升幸福感有充分研究支持。你成就他人，身体会回报你。事上磨练延续：本周做一件成就他人的事。",
+      "status": "published",
+      "article_file": "08_利他的幸福_助人者高效应.md",
+      "translated_at": "2026-08-05T18:34:03.824544",
+      "media_id": "uohiBa_iOzkD2OcZecjBQDtgsGY9FF_0oVis7a-26QJ8jCa5ZGeqnu_nEJ8WV67h",
+      "published_at": "2026-08-06T13:46:22.724343"
+    },
+    {
+      "no": 9,
+      "title": "与万物连接：自然、他人与自我",
+      "knowledge_brief": "连接感是心理健康的底层需求。与自然连接、与他人连接、与自我连接三者互相滋养。",
+      "status": "published",
+      "article_file": "09_与万物连接_自然_他人与自我.md",
+      "translated_at": "2026-08-05T17:48:00.031847",
+      "media_id": "uohiBa_iOzkD2OcZecjBQG7f_GGXwASsLv6AfyNE8VJ9cKimbS3YiYsLfKE9IM58",
+      "published_at": "2026-08-06T13:46:28.014986"
+    },
+    {
+      "no": 10,
+      "title": "身心闭环：阶段收束",
+      "knowledge_brief": "总结身体硬件与社会网络两阶段的收获：睡好吃好动好、走进自然、连接他人，身心社互为支撑，为经济阶段做准备。",
+      "status": "published",
+      "article_file": "10_身心闭环_阶段收束.md",
+      "translated_at": "2026-08-05T17:51:52.304264",
+      "media_id": "uohiBa_iOzkD2OcZecjBQJGIeGeSzfQaFrX5EgcawclYhTeARIORjqJpqryuarR9",
+      "published_at": "2026-08-06T13:46:33.172404"
+    }
+  ]
+}

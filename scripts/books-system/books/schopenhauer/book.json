@@ -1,0 +1,20 @@
+{
+  "name": "schopenhauer",
+  "title_cn": "人生的智慧",
+  "author_cn": "叔本华",
+  "source": "C:/Users/zhaot/Downloads/Hegel/Schopenhauer_Wisdom_of_Life_10741.txt",
+  "bounds": [
+    ["导论 Introduction", 68, 124],
+    ["第一章 人的划分 Division of the Subject", 124, 430],
+    ["第二章 人的性格 Personality (What a Man Is)", 430, 1357],
+    ["第三章 人的财产 Property (What a Man Has)", 1357, 1637],
+    ["第四章 人的地位 Position (A Man's Place in the Estimation of Others)", 1637, 3769]
+  ],
+  "cn_titles": {
+    "1": "导论：智慧生活的艺术",
+    "2": "第一章 人的划分：你是什么",
+    "3": "第二章 人的性格：内在决定幸福",
+    "4": "第三章 人的财产：身外之物",
+    "5": "第四章 人的地位：他人眼中的你"
+  }
+}
