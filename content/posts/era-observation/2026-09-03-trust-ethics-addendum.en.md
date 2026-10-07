@@ -9,9 +9,7 @@ aliases:
   - /posts/era-observation/trust-ethics-addendum/
 ---
 
-# On Ethics · Addendum — Ethics Is Always Late, and Society Keeps Rebuilding It
-
-> Trust series · upstream addendum (the system's final chapter; a draft, pending the author's revision).
+> Trust series · upstream addendum (the system's final chapter).
 > Positioning: independent of the published [*Ethics Is Not Moral Preaching; It Is Trust's Water Supply*](/posts/era-observation/2026-09-02-trust-ethics/). The main essay finished laying out the machine that "manufactures keeping one's word" — ground out, manufactured, multi-channel supply, open to overturn. But it left several question marks in readers' (and the author's) mind: **from which second does ethics count as "ethics"? How does "profitable" become "ought"? By what is it transmitted? Why do humans quarrel over "good"? Why does every era rebuild it? Can an individual move the ethics inside their own body? And if so, why does it so often fail to move — what exactly stands between knowing and doing?** This addendum touches not one word of the main essay; it only fills the unopened places.
 > Writing rules, same as the main essay: ① this is a model, not an object of faith; ② every universal claim self-limits first; ③ no sides — mechanisms only, never which ethics is right; ④ no private engineering cases. One rule added: this essay does not defend itself — it lays out conclusions and does not quarrel with invisible opponents. To overturn it: welcome. The main essay's epilogue left the falsification opening.
 
@@ -307,5 +305,5 @@ And true ethics' every election is never inevitable — someone paid, in advance
 - **The individual mirror**: [*Trust Crisis · Precondition Theory*](/read/xinqian/) — six pits, five currents; how the individual walks through the vacuum.
 - **The group mirror**: [*Trust Crisis · Group-Side Observation*](/posts/era-observation/2026-08-31-trust-crisis-group-side/) — seven symptoms and a sociological index; where the era goes.
 
-*First draft September 2026. This addendum is a draft pending the author's revision. Every mechanism in it is a tool for understanding, not a law of history.*
+*Completed September 2026. Every mechanism in it is a tool for understanding, not a law of history.*
 *Connections: this essay returns to *Ethics Is Not Moral Preaching, It Is Trust's Water Supply* (the main essay) — I connects to main §§1.1–1.2 and 4.3; II connects to main §1.2; III unfolds main §2.1's line about watching adults keep faith; IV elevates main §2.2's "fairness" process and §3.3's "quarreling over good"; V lands main §4's "ethics is continuously shaped" onto a timeline; VI continues the main essay's epilogue "turning the lamp on yourself"; VII grows from VI's inspection port — "when was the last real loss" — reducing action to a weight auction, reconnecting II's "internalized as asset" and III's "imitation pre-install," with three daily and per-deed examinations as execution and correction; the close takes over the main essay's falsification opening. Same method, origin, and scale as the whole series.*

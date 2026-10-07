@@ -10,8 +10,6 @@ aliases:
   - /trust-crisis-group-side/
 ---
 
-# Individuals Are Changing Currency; the Group Awaits Recasting: Trust Crisis · Group-Side Observation
-
 > Era Observation · opening essay. The column's charter: **no chasing hot-topic emotions; only analytical frameworks are given**, and the framework will keep being applied to collective trust events (update rhythm at the end).
 > This essay is the group mirror of *Trust Crisis · Precondition Theory* (the individual side): the individual side covered "how you walk within the era"; this one covers "where the era itself is heading." No predictions, no verdicts — only an observation framework.
 > Best read after the individual side (pit-avoidance + riding momentum); new readers are advised to read that first and return here.

@@ -7,8 +7,6 @@ tags: ["pseudo-demand", "consumerism", "Marcuse", "trust crisis", "era observati
 description: "Era Observation · standalone essay (the desire side of the Trust series). A dishcloth gets rebranded as 'kitchen paper towels' — you think you wanted it, but someone wanted it for you in advance. The same assembly line runs three more workshops: housing, success, and manufactured innocence. One discriminator, three self-defense questions: check the source, check the pricing, check the exit. Real needs survive an audit. No prior reading required."
 ---
 
-# Pseudo-Demand: The "Want" That Was Mass-Produced for You
-
 > Era Observation · standalone essay. You don't need to have read anything else in the series — this one starts from the most ordinary sentence: "I want to buy it."
 > The other essays in the series take apart "whom should I trust": whether other people's words count, and how society manufactures that "counting" year after year. This essay turns to the other side of the same machine — the side that supplies it — and asks a question one layer deeper: **shouldn't even "my own wanting" be verified first?**
 > The writing rules are the same as the series: ① this is a model, not an object of faith; ② every universal claim carries its own limits; ③ we dissect mechanisms only, never the people who buy things; ④ no private anecdotes. One rule added here: **I won't talk you into buying less** — I'll only show you the filling pipeline. Whether to buy is your ledger to keep.

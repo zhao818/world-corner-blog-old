@@ -9,8 +9,6 @@ aliases:
   - /posts/era-observation/trust-ethics/
 ---
 
-# Ethics Is Not Moral Preaching; It Is Trust's Water Supply: Trust · On Ethics
-
 > Trust series · upstream (the supply side). The origin essay covered the demand side — how the individual machine lives on "predictability"; Precondition Theory covered how the individual walks through this era; Group-Side Observation covered where the era is heading. All three kept using the word "predictability," yet none answered the more upstream question: **who, exactly, is producing predictability, in an unbroken stream?** This essay supplies that upstream.
 > Positioning: what it completes is the layer never opened in Origin §1.3 — "morality is a part, not the chassis; that layer is dismantled in the next section" — the machine that manufactures "keeping one's word." With it in place, the half-sentence left hanging in the origin essay finally lands.
 > Reading order: not mandatory. To build the coordinate system first, start with the origin essay (the demand side's foundation; this is its supply side). To go straight to "where predictability comes from," start here. The two interlock: one machine, one assembly line.

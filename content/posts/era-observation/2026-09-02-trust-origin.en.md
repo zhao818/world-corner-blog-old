@@ -9,8 +9,6 @@ aliases:
   - /posts/era-observation/trust-origin/
 ---
 
-# Trust Is Not Morality; It Is the Chassis of Survival: The Origin of Trust
-
 > Trust series · Origin (the foundational outline). The individual side covers "how you should walk"; the group side covers "where the era is heading." Neither answers the more fundamental question: **What is trust? Why must people trust? When trust collapses, why does it push people to two extremes? And why can this crack never be sewn shut in a lifetime?** This piece supplies that foundation.
 > Positioning: this is not a supplement to the other two essays — it is their common ground. Once it is in place, the "vacuum period" and the "recasting period" stop being asserted facts and become derivable conclusions.
 > Reading order: not mandatory. To build the coordinate system first, start here. To see conclusions first, read the individual and group essays and come back — this piece nails their assertions into conclusions. The three interlock.

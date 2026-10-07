@@ -11,8 +11,6 @@ aliases:
   - /posts/bio-thermal-overload-offline-preprocessi/
 ---
 
-# 向昆虫学习：食物深加工与文明进阶——一个状态机的错误迁移
-
 > 人类以为自己是在优化算法，其实只是在重新定义状态机的初始条件。
 
 ---

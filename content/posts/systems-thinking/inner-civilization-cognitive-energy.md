@@ -10,8 +10,6 @@ aliases:
   - /posts/inner-civilization-cognitive-energy/
 ---
 
-# 认知能量工程：一次关于心智状态机的系统重构实验
-
 > 你无法优化一个你从未真正理解的系统，尤其是当这个系统恰好是你自己。
 
 ---
