@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -43,7 +43,7 @@ TRIGGERS 表设计有盲区：通用路由和专用路由分开写，但加载�
 自检问题（加载完文件后问自己）：">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/pitfalls/pit-triggers-multi-match-merge/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.544608da90aadc9e4c41ff9bc4725dbd15a48344b035c1f83074d719dab967c0.css" integrity="sha256-VEYI2pCq3J5MQf&#43;bxHJdvRWkg0SwNcH4MHTXGdq5Z8A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -53,7 +53,7 @@ TRIGGERS 表设计有盲区：通用路由和专用路由分开写，但加载�
 <link rel="mask-icon" href="https://worldcorner.xyz/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://worldcorner.xyz/pitfalls/pit-triggers-multi-match-merge/">
+<link rel="alternate" hreflang="zh" href="https://worldcorner.xyz/pitfalls/pit-triggers-multi-match-merge/">
 <noscript>
     <style>
         #theme-toggle,
@@ -85,6 +85,177 @@ TRIGGERS 表设计有盲区：通用路由和专用路由分开写，但加载�
     }
   }
 }
+</script>
+<script>
+(function () {
+  function init() {
+    var content = document.querySelector('.post-content') || document.querySelector('.pitfall-single');
+    if (!content) return;
+    var titleEl = document.querySelector('.post-title') || content.querySelector('h1');
+    var lang = (document.documentElement.getAttribute('lang') || 'zh').slice(0, 2);
+    var target = lang === 'en' ? 'zh' : 'en';
+    var S = {
+      btn: "🌐 AI 翻译",
+      back: "↩ 返回原文",
+      loading: "AI 翻译中…长文约需一分钟",
+      done: "AI 译文（机器翻译，仅供参考 · 由 worldcorner API 提供）",
+      fail: "翻译失败，请稍后再试"
+    };
+    var API = 'https://api.worldcorner.xyz/community/api/translate';
+    var btn = document.createElement('button');
+    btn.className = 'ai-tr-btn';
+    btn.type = 'button';
+    btn.textContent = S.btn;
+    document.body.appendChild(btn);
+
+    var panel = document.createElement('div');
+    panel.className = 'ai-tr-panel';
+    panel.hidden = true;
+    if (content.parentNode) content.parentNode.insertBefore(panel, content.nextSibling);
+
+    var state = 'orig';
+    var cache = null;
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function toHtml(t) {
+      return t.split(/\n\n+/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    }
+    function call(text) {
+      return fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target: target })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.error) throw new Error(j.error);
+        return j.translated;
+      });
+    }
+    function withRetry(fn, n) {
+      var p = fn();
+      for (var i = 0; i < (n || 1); i++) {
+        p = p.catch(function () { return new Promise(function (res) { setTimeout(res, 1500); }).then(fn); });
+      }
+      return p;
+    }
+    
+
+    function splitClient(text, max) {
+      var paras = text.split(/\n\n+/);
+      var chunks = [];
+      var buf = '';
+      for (var i = 0; i < paras.length; i++) {
+        var p = paras[i].trim();
+        if (!p) continue;
+        if (p.length > max) {
+          if (buf) { chunks.push(buf); buf = ''; }
+          for (var j = 0; j < p.length; j += max) chunks.push(p.slice(j, j + max));
+          continue;
+        }
+        if (buf && (buf + '\n\n' + p).length > max) { chunks.push(buf); buf = p; }
+        else buf = buf ? buf + '\n\n' + p : p;
+      }
+      if (buf) chunks.push(buf);
+      return chunks;
+    }
+    function fetchAll() {
+      if (cache) {
+        panel.innerHTML = (cache.title ? '<h1 class="ai-tr-title"></h1>' : '') + toHtml(cache.body);
+        if (cache.title) panel.querySelector('.ai-tr-title').textContent = cache.title;
+        var doneNote = document.createElement('p');
+        doneNote.className = 'ai-tr-note';
+        doneNote.textContent = S.done;
+        panel.appendChild(doneNote);
+        return Promise.resolve(cache);
+      }
+      var titleText = titleEl ? titleEl.innerText.trim() : '';
+      var chunks = splitClient(content.innerText.trim(), 650);
+      var results = new Array(chunks.length);
+      var done = 0;
+      var head = titleText ? '<h1 class="ai-tr-title"></h1>' : '';
+      var note = document.createElement('p');
+      note.className = 'ai-tr-note';
+      function render() {
+        var html = head;
+        for (var i = 0; i < results.length; i++) if (results[i]) html += toHtml(results[i]);
+        panel.innerHTML = html;
+        note.textContent = done < chunks.length ? done + '/' + chunks.length + ' · ' + S.loading : S.done;
+        panel.appendChild(note);
+      }
+      if (titleText) {
+        withRetry(function () { return call(titleText); }, 1).then(function (t) {
+          if (state === 'trans') { var h1 = panel.querySelector('.ai-tr-title'); if (h1) h1.textContent = t; }
+        }).catch(function () {});
+      }
+      var idx = 0;
+      function lane() {
+        return new Promise(function (resolve) {
+          function next() {
+            if (idx >= chunks.length) return resolve();
+            var i = idx++;
+            withRetry(function () { return call(chunks[i]); }, 2).then(function (t) {
+              results[i] = t; done++; render(); next();
+            }).catch(function () {
+              results[i] = '⚠ ' + S.fail; done++; render(); next();
+            });
+          }
+          next();
+        });
+      }
+      render();
+      return Promise.all([lane(), lane()]).then(function () {
+        cache = { title: titleText, body: results.join('\n\n') };
+        return cache;
+      });
+    }
+    btn.addEventListener('click', function () {
+      if (state === 'trans') {
+        state = 'orig';
+        panel.hidden = true;
+        content.style.display = '';
+        if (titleEl) titleEl.style.display = '';
+        btn.textContent = S.btn;
+        return;
+      }
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = S.loading;
+      if (state === 'orig') {
+        panel.hidden = false;
+        content.style.display = 'none';
+        if (titleEl) titleEl.style.display = 'none';
+        state = 'trans';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      fetchAll().then(function () {
+        state = 'trans';
+        btn.disabled = false;
+        btn.textContent = S.back;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = S.btn;
+        panel.innerHTML = '<p class="ai-tr-note">' + esc(S.fail) + '</p>';
+        panel.hidden = false;
+        state = 'orig';
+      });
+    });
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '.ai-tr-btn{position:fixed;right:18px;bottom:18px;z-index:99;padding:9px 14px;border-radius:999px;',
+      'border:1px solid var(--secondary,#999);background:var(--theme,#fafafa);color:var(--primary,#111);',
+      'font-size:14px;cursor:pointer;opacity:.92;box-shadow:0 2px 10px rgba(0,0,0,.15);}',
+      '.ai-tr-btn:hover{opacity:1}',
+      '.ai-tr-btn:disabled{cursor:wait;opacity:.7}',
+      '.ai-tr-panel{border:1px dashed var(--secondary,#bbb);border-radius:8px;padding:18px 22px;margin:24px 0;line-height:1.8}',
+      '.ai-tr-panel[hidden]{display:none}',
+      '.ai-tr-note{font-size:12px;color:var(--secondary,#888);margin:0 0 12px}',
+      '.ai-tr-title{font-size:1.4em;margin:0 0 16px}'
+    ].join('');
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 <meta property="og:title" content="TRIGGERS 多场景同时命中时只读第一条，漏了后续路由" />
 <meta property="og:description" content="症状
@@ -199,7 +370,7 @@ TRIGGERS 表设计有盲区：通用路由和专用路由分开写，但加载�
   ],
   "articleBody": "症状 你看到什么？\n用户说\u0026quot;审计五件套\u0026quot;来审计一个 Excel 文件。这是一个数据录入项目，TRIGGERS.md 有两条路由同时命中：\n\u0026ldquo;审计五件套 \/ 跑审计\u0026rdquo; → 加载 audit-four-piece.md \u0026ldquo;数据录入项目\u0026rdquo; → 加载 audit-four-piece-data.md、excel-com-audit.md、data-cross-verify.md 但实际操作中只读了第一条（通用版），漏了数据版三条。用户提醒\u0026quot;我记得优化过你的记忆啊，为什么还做不到\u0026quot;——因为之前已经修过这个问题，但触发匹配逻辑没改彻底。\n后果：跑完审计流程后，数据特有的坑（收支=明细交叉验证、实发=应发检查、Excel COM 修复模式）全部没做。\n根因 到底为什么出问题？\n匹配策略是\u0026quot;命中即停\u0026quot;：扫到第一个匹配行就停下来加载了，没继续往下扫 没有 OR → AND 的思维转换：多条路由匹配同一任务时，取的文件应该是并集（AND），不是第一个命中（OR） TRIGGERS 表设计有盲区：通用路由和专用路由分开写，但加载逻辑没做合并 事后没自检：加载完文件后没问自己\u0026quot;用户说的是审计\u002bExcel，我有没有读 Excel 相关的路由？\u0026quot; 修复 怎么做？\n匹配策略改为\u0026quot;全量扫描 \u002b AND 合并\u0026quot;：\n输入：用户消息关键词 匹配：扫描 TRIGGERS.md 全部行，收集所有匹配的路由 合并：取所有匹配路由的并集 加载：读全部匹配文件 例如用户说\u0026quot;审计这个 Excel\u0026quot;：\n匹配行1: \u0026#34;审计五件套\u0026#34; → audit-four-piece.md 匹配行2: \u0026#34;数据录入项目\u0026#34; → audit-four-piece-data.md, excel-com-audit.md, data-cross-verify.md 匹配行3: \u0026#34;操作 Excel\u0026#34; → excel-com-audit.md 合并结果 = {audit-four-piece.md, audit-four-piece-data.md, excel-com-audit.md, data-cross-verify.md} → 全量加载这 4 个文件 自检问题（加载完文件后问自己）：\n用户提到了哪些关键词？ TRIGGERS.md 里有多少行匹配了这些关键词？ 我有没有全部读？ 怎么避免 下次怎么不踩？\n扫全表不早停：触发匹配时遍历 TRIGGERS.md 全部行，收集所有匹配项 AND 合并取并集：多条路由的文件列表取并集，去重后全读 自检三板斧： 用户说了什么关键词？ 还有什么场景也匹配这个关键词？（翻 TRIGGERS 全表确认） 全量加载了吗？ 用户纠正过的地方加红线：这个坑已经被纠正过了，TRIGGERS.md 里\u0026quot;审计五件套\u0026quot;行的文件列表已更新为全量 ",
   "wordCount" : "92",
-  "inLanguage": "en",
+  "inLanguage": "zh",
   "datePublished": "2026-06-13 00:00:00 \u002b0000 UTC",
   "dateModified": "2026-06-13 00:00:00 \u002b0000 UTC",
   "author":{
@@ -257,6 +428,10 @@ TRIGGERS 表设计有盲区：通用路由和专用路由分开写，但加载�
                     </svg>
                 </button>
                 <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://worldcorner.xyz/en/" title="English"
+                            aria-label="English">En</a>
+                    </li>
                 </ul>
             </div>
         </div>

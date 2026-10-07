@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,7 +9,7 @@
 <meta name="description" content="V4三次延期背后，DeepSeek最该打败的不是别人——是自己">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/systems-thinking/2026-07-23-deepseek-watershed/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.544608da90aadc9e4c41ff9bc4725dbd15a48344b035c1f83074d719dab967c0.css" integrity="sha256-VEYI2pCq3J5MQf&#43;bxHJdvRWkg0SwNcH4MHTXGdq5Z8A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -19,7 +19,7 @@
 <link rel="mask-icon" href="https://worldcorner.xyz/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://worldcorner.xyz/posts/systems-thinking/2026-07-23-deepseek-watershed/">
+<link rel="alternate" hreflang="zh" href="https://worldcorner.xyz/posts/systems-thinking/2026-07-23-deepseek-watershed/">
 <noscript>
     <style>
         #theme-toggle,
@@ -51,6 +51,177 @@
     }
   }
 }
+</script>
+<script>
+(function () {
+  function init() {
+    var content = document.querySelector('.post-content') || document.querySelector('.pitfall-single');
+    if (!content) return;
+    var titleEl = document.querySelector('.post-title') || content.querySelector('h1');
+    var lang = (document.documentElement.getAttribute('lang') || 'zh').slice(0, 2);
+    var target = lang === 'en' ? 'zh' : 'en';
+    var S = {
+      btn: "🌐 AI 翻译",
+      back: "↩ 返回原文",
+      loading: "AI 翻译中…长文约需一分钟",
+      done: "AI 译文（机器翻译，仅供参考 · 由 worldcorner API 提供）",
+      fail: "翻译失败，请稍后再试"
+    };
+    var API = 'https://api.worldcorner.xyz/community/api/translate';
+    var btn = document.createElement('button');
+    btn.className = 'ai-tr-btn';
+    btn.type = 'button';
+    btn.textContent = S.btn;
+    document.body.appendChild(btn);
+
+    var panel = document.createElement('div');
+    panel.className = 'ai-tr-panel';
+    panel.hidden = true;
+    if (content.parentNode) content.parentNode.insertBefore(panel, content.nextSibling);
+
+    var state = 'orig';
+    var cache = null;
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function toHtml(t) {
+      return t.split(/\n\n+/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    }
+    function call(text) {
+      return fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target: target })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.error) throw new Error(j.error);
+        return j.translated;
+      });
+    }
+    function withRetry(fn, n) {
+      var p = fn();
+      for (var i = 0; i < (n || 1); i++) {
+        p = p.catch(function () { return new Promise(function (res) { setTimeout(res, 1500); }).then(fn); });
+      }
+      return p;
+    }
+    
+
+    function splitClient(text, max) {
+      var paras = text.split(/\n\n+/);
+      var chunks = [];
+      var buf = '';
+      for (var i = 0; i < paras.length; i++) {
+        var p = paras[i].trim();
+        if (!p) continue;
+        if (p.length > max) {
+          if (buf) { chunks.push(buf); buf = ''; }
+          for (var j = 0; j < p.length; j += max) chunks.push(p.slice(j, j + max));
+          continue;
+        }
+        if (buf && (buf + '\n\n' + p).length > max) { chunks.push(buf); buf = p; }
+        else buf = buf ? buf + '\n\n' + p : p;
+      }
+      if (buf) chunks.push(buf);
+      return chunks;
+    }
+    function fetchAll() {
+      if (cache) {
+        panel.innerHTML = (cache.title ? '<h1 class="ai-tr-title"></h1>' : '') + toHtml(cache.body);
+        if (cache.title) panel.querySelector('.ai-tr-title').textContent = cache.title;
+        var doneNote = document.createElement('p');
+        doneNote.className = 'ai-tr-note';
+        doneNote.textContent = S.done;
+        panel.appendChild(doneNote);
+        return Promise.resolve(cache);
+      }
+      var titleText = titleEl ? titleEl.innerText.trim() : '';
+      var chunks = splitClient(content.innerText.trim(), 650);
+      var results = new Array(chunks.length);
+      var done = 0;
+      var head = titleText ? '<h1 class="ai-tr-title"></h1>' : '';
+      var note = document.createElement('p');
+      note.className = 'ai-tr-note';
+      function render() {
+        var html = head;
+        for (var i = 0; i < results.length; i++) if (results[i]) html += toHtml(results[i]);
+        panel.innerHTML = html;
+        note.textContent = done < chunks.length ? done + '/' + chunks.length + ' · ' + S.loading : S.done;
+        panel.appendChild(note);
+      }
+      if (titleText) {
+        withRetry(function () { return call(titleText); }, 1).then(function (t) {
+          if (state === 'trans') { var h1 = panel.querySelector('.ai-tr-title'); if (h1) h1.textContent = t; }
+        }).catch(function () {});
+      }
+      var idx = 0;
+      function lane() {
+        return new Promise(function (resolve) {
+          function next() {
+            if (idx >= chunks.length) return resolve();
+            var i = idx++;
+            withRetry(function () { return call(chunks[i]); }, 2).then(function (t) {
+              results[i] = t; done++; render(); next();
+            }).catch(function () {
+              results[i] = '⚠ ' + S.fail; done++; render(); next();
+            });
+          }
+          next();
+        });
+      }
+      render();
+      return Promise.all([lane(), lane()]).then(function () {
+        cache = { title: titleText, body: results.join('\n\n') };
+        return cache;
+      });
+    }
+    btn.addEventListener('click', function () {
+      if (state === 'trans') {
+        state = 'orig';
+        panel.hidden = true;
+        content.style.display = '';
+        if (titleEl) titleEl.style.display = '';
+        btn.textContent = S.btn;
+        return;
+      }
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = S.loading;
+      if (state === 'orig') {
+        panel.hidden = false;
+        content.style.display = 'none';
+        if (titleEl) titleEl.style.display = 'none';
+        state = 'trans';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      fetchAll().then(function () {
+        state = 'trans';
+        btn.disabled = false;
+        btn.textContent = S.back;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = S.btn;
+        panel.innerHTML = '<p class="ai-tr-note">' + esc(S.fail) + '</p>';
+        panel.hidden = false;
+        state = 'orig';
+      });
+    });
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '.ai-tr-btn{position:fixed;right:18px;bottom:18px;z-index:99;padding:9px 14px;border-radius:999px;',
+      'border:1px solid var(--secondary,#999);background:var(--theme,#fafafa);color:var(--primary,#111);',
+      'font-size:14px;cursor:pointer;opacity:.92;box-shadow:0 2px 10px rgba(0,0,0,.15);}',
+      '.ai-tr-btn:hover{opacity:1}',
+      '.ai-tr-btn:disabled{cursor:wait;opacity:.7}',
+      '.ai-tr-panel{border:1px dashed var(--secondary,#bbb);border-radius:8px;padding:18px 22px;margin:24px 0;line-height:1.8}',
+      '.ai-tr-panel[hidden]{display:none}',
+      '.ai-tr-note{font-size:12px;color:var(--secondary,#888);margin:0 0 12px}',
+      '.ai-tr-title{font-size:1.4em;margin:0 0 16px}'
+    ].join('');
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 <meta property="og:title" content="DeepSeek分水岭" />
 <meta property="og:description" content="V4三次延期背后，DeepSeek最该打败的不是别人——是自己" />
@@ -103,7 +274,7 @@
   ],
   "articleBody": " 开篇：这是一篇迟到了四个月的文章。不是不想写——是形势一直在变。但有些问题，不会因为你不看就消失。\n🔴 DeepSeek最大的敌人不是OpenAI，不是Kimi——是自己。\n7月20日，V4仍未正式发布。这已经是第三次延期。\n从春节前拖到5月，从5月推到7月中旬，从7月中旬变成了\u0026quot;灰度测试中\u0026quot;。\n每一次延期都有\u0026quot;技术原因\u0026quot;——适配华为昇腾芯片，重写了超200个核心算子。听起来很硬核。但真正让人揪心的，不是V4本身——而是藏在延期背后的那个更根本的问题。\n一、看得见的战场：三方角力 先看清局面。\nKimi K3 已经杀出来了。综合推理能力略高于V4 Pro，价格高出约一个数量级（K3输出$15\/百万tokens，V4 Pro仅$0.87）。不是\u0026quot;天壤之别\u0026quot;，更像\u0026quot;95分和80分\u0026quot;。\n✦ 但AI竞赛从来不是\u0026quot;谁更聪明\u0026quot;——是\u0026quot;谁能让更多人用得起\u0026quot;。\nReasonix（第三方开源项目，非DeepSeek官方）标星1.8万，已被DeepSeek API文档收录。它的杀手锏是极致省钱：围绕前缀缓存做深度优化，单日435M token，缓存命中率99.82%，费用从61美元降至12美元。\n而真正的\u0026quot;暗雷\u0026quot;是 OpenCode：一个开源AI编程助手，插件整合40多种免费模型（含英伟达免费API）。月活从65万飙至650万，GitHub星标16.1万。\n🟡 转发给做AI的朋友：OpenCode的威胁在于——它让DeepSeek模型沦为\u0026quot;可随时替换的备胎\u0026quot;。低价护城河，正在被瓦解。\n二、裂缝在哪里？ 三个战场，DeepSeek同时在打。\n三条战线：①V4模型发布（华为昇腾适配）②Harness智能体框架（对标Claude Code）③自研AI推理芯片。\n问题不是方向错了——而是同时推进三件事，资源被分散，每一条线都不及预期。\n\u0026ldquo;目标正确，执行失速。\u0026rdquo; 这是对DeepSeek目前状态最精准的概括。\n战略节奏出了三个问题：\n目标定得太满、太急 时间评估过于乐观 多条战线在抢同一批顶尖人才 目前还有半年左右的窗口期。不是来自Kimi（太贵）或OpenAI\/Claude（中国用户有天然门槛），而是来自用户耐心——用户不会永远等下去。\n三、最本质的问题：管理 到这里我们分析的是\u0026quot;外因\u0026quot;。但真正的问题，在内不在外。\nV4的反复延期，表面是技术问题，深层是管理问题：\n优先级不清晰 资源调配不合理 跨部门协同不到位 决策链路过长 这不是\u0026quot;技术不行\u0026quot;，是\u0026quot;组织能力\u0026quot;追不上\u0026quot;业务野心\u0026quot;。\nDeepSeek的创始人梁文锋是顶尖技术天才——但技术能力与管理能力是两套完全不同的逻辑。\n✦ 技术天才擅长\u0026quot;解决技术问题\u0026quot;，管理高手擅长\u0026quot;整合资源、凝聚人心、把控节奏\u0026quot;。\n一个人能带50人，不代表能带1000人。\n这无关能力高下，而是角色错位。\n四、人才：真正的暗流 从2025下半年至今，DeepSeek核心研发的流失触目惊心：\n姓名 角色 去向 罗福莉 V2核心开发者 → 小米，MiMo大模型负责人 郭达雅 R1核心研究员 → 字节跳动，Agent负责人 王炳宣 第一代大模型核心作者 → 腾讯混元团队 阮翀 多模态负责人 已离职 魏浩然 OCR核心作者 已离职 覆盖基座模型、推理、多模态、OCR四条核心技术路线。\n薪资只是\u0026quot;门槛\u0026quot;——真正让人走的原因，是\u0026quot;感觉不到被重视\u0026quot;。\n✦ 人才流失，不是输在薪资，是输在\u0026quot;能不能让人感觉到在这里是独特的、被需要的、有未来的。\u0026quot;\nDeepSeek的应对：510亿元融资\u002b\u0026ldquo;禁挖人\u0026quot;条款\u002b大规模扩招（所有部门规模翻倍）。\n好消息是：V4技术报告显示，270人研发团队仅10人离职（核心部门离职率不到4%）。目前还没有核心团队集体出走的最坏情况。\n但隐患未消。如果管理问题不解决，这个隐患不会自己消失。\n五、\u0026ldquo;造车\u0026quot;和\u0026quot;卖车\u0026quot;必须分开 用一个比喻来总结DeepSeek今天的问题：\n懂农业的人去拍板做汽车——在自己领域是天才，在别的领域可能是外行。\n技术能力是用来\u0026quot;造车\u0026quot;的，管理能力是用来\u0026quot;卖车\u0026quot;的。\n小作坊可以又造又卖（夫妻店模式） 做大了，必然要分开 如果技术牛人什么都管：\n拍板产品方向 → 做了很酷但没人用的功能 决定资源分配 → 技术难度大的项目抢到人，业务价值高的项目没人 带团队 → 缺乏耐心培养新人，成长慢 DeepSeek正处于从\u0026quot;小作坊\u0026quot;到\u0026quot;正规军\u0026quot;的分水岭。这个过渡期最危险——既失去了小作坊的灵活性，又没建立起大公司的体系化。\n六、破局的关键 DeepSeek需要的不是一个\u0026quot;技术更牛的人\u0026rdquo;，而是一个：\n有魅力：能让团队愿意为之拼命 能整合资源：协调模型、智能体、芯片三条线 能凝聚人心：让每个人感觉到\u0026quot;被看见、被尊重、被欣赏\u0026rdquo; 能把控节奏：把愿景翻译成可执行的计划，不再跳票 领导力的本质，不是\u0026quot;自己有多优秀\u0026quot;，而是\u0026quot;能让身边的人感受到自己有多优秀\u0026quot;。\n真正厉害的领导者，不只是自己能做到尊重和欣赏别人——而是能让身边的人也学会这种尊重和欣赏，然后传递给更下面的人。形成一种正向循环的组织文化。\n这种文化一旦形成，就不再依赖某一个人，变成组织的\u0026quot;天然属性\u0026quot;，变成真正的护城河。\n写在最后 这场分析的核心，可以用一句话概括：\n✦ \u0026ldquo;一个组织的上限，不是由技术决定的，而是由\u0026rsquo;能不能让每个人都被看见、被尊重、被激发\u0026rsquo;决定的。\u0026rdquo;\nDeepSeek正站在一个关键的十字路口。\n往前一步，它可能成为一家真正的平台型公司；停在这里，它可能永远只是一家\u0026quot;技术很牛的公司\u0026quot;。\n它拥有中国最好的大模型技术、最极致的性价比策略、开源生态的天然优势、一群愿意长期投入的人。\n我希望它能跨过去。\n💬 你怎么看？DeepSeek的管理问题会怎么解决？欢迎留言讨论。\n📌 收藏这篇，下次讨论AI格局的时候翻出来看看。 🔍 微信搜一搜「美好需要创造」，更多深度观察。\n转发语推荐： \u0026ldquo;这篇文章把DeepSeek今天的问题说透了——不是技术不行，是管理追不上野心。做AI的同事都该看看。\u0026rdquo;\n",
   "wordCount" : "119",
-  "inLanguage": "en",
+  "inLanguage": "zh",
   "datePublished": "2026-07-23 00:00:00 \u002b0000 UTC",
   "dateModified": "2026-07-23 00:00:00 \u002b0000 UTC",
   "author":{
@@ -161,6 +332,10 @@
                     </svg>
                 </button>
                 <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://worldcorner.xyz/en/" title="English"
+                            aria-label="English">En</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -553,6 +728,13 @@
           </a>
         </li>
         <li>
+          <a href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/"
+             class="series-capsule series-systems-thinking"
+             title="内在文明与认知工程">
+            内在文明与认知工程
+          </a>
+        </li>
+        <li>
           <a href="https://worldcorner.xyz/posts/systems-thinking/outward-and-inward/"
              class="series-capsule series-systems-thinking"
              title="人生的向外与向内">
@@ -560,10 +742,10 @@
           </a>
         </li>
         <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/"
+          <a href="https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/"
              class="series-capsule series-systems-thinking"
-             title="内在文明与认知工程">
-            内在文明与认知工程
+             title="生育焦虑的背后">
+            生育焦虑的背后
           </a>
         </li>
         <li>
@@ -578,13 +760,6 @@
              class="series-capsule series-systems-thinking"
              title="文明进阶的关键因素">
             文明进阶的关键因素
-          </a>
-        </li>
-        <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/"
-             class="series-capsule series-systems-thinking"
-             title="生育焦虑的背后">
-            生育焦虑的背后
           </a>
         </li>
         <li>
@@ -651,17 +826,17 @@
           </a>
         </li>
         <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/"
-             class="series-capsule series-systems-thinking"
-             title="在系统的噪音中，重构灵魂的索引">
-            在系统的噪音中，重构灵魂的索引
-          </a>
-        </li>
-        <li>
           <a href="https://worldcorner.xyz/posts/systems-thinking/2026-05-01-the-api-of-relationships/"
              class="series-capsule series-systems-thinking"
              title="社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话">
             社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话
+          </a>
+        </li>
+        <li>
+          <a href="https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/"
+             class="series-capsule series-systems-thinking"
+             title="在系统的噪音中，重构灵魂的索引">
+            在系统的噪音中，重构灵魂的索引
           </a>
         </li>
         <li>

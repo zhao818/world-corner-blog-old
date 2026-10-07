@@ -153,38 +153,6 @@
     </item>
     
     <item>
-      <title>Gitee 已配镜像还手动 push gitee，做了多余操作</title>
-      <link>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</link>
-      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
-      
-      <guid>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</guid>
-      <description>&lt;h2 id=&#34;症状&#34;&gt;症状&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;你看到什么？&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;每次 &lt;code&gt;git commit&lt;/code&gt; 后都跑 &lt;code&gt;git push origin master &amp;amp;&amp;amp; git push gitee master&lt;/code&gt;，两条命令都成功。实际上 Gitee 那边早已配置了从 GitHub 自动镜像同步，push origin 之后 Gitee 会自动拉取。手动再 push gitee 不仅多余，还可能在极端情况下导致冲突。&lt;/p&gt;
-&lt;p&gt;更严重的是：&lt;code&gt;git remote&lt;/code&gt; 里 gitee 的 URL 硬编码了 token（&lt;code&gt;Zhaotianbibg1:cfe33...@gitee.com&lt;/code&gt;），每次 push 都明文传输。&lt;/p&gt;
-&lt;h2 id=&#34;根因&#34;&gt;根因&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;到底为什么出问题？&lt;/p&gt;&lt;/blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;不知道镜像已配&lt;/strong&gt;：Gitee 后台配了 GitHub → Gitee 镜像后，没有删掉本地的 gitee remote&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;习惯性操作&lt;/strong&gt;：之前手动 push 两个 remote 形成习惯，没人提醒就一直做&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;没有&amp;quot;查 remote 列表 → 确认是否冗余&amp;quot;的检查步骤&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;修复&#34;&gt;修复&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;怎么做？&lt;/p&gt;&lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 删掉 gitee remote（镜像自动同步，不需要手动 push）&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote remove gitee
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 确认只剩下 origin&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote -v
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (fetch)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (push)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;以后只推 GitHub：&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>Gitee 建仓库前没查已有仓库，建了重复仓库</title>
       <link>https://worldcorner.xyz/pitfalls/pit-gitee-duplicate-repo-check/</link>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
@@ -226,6 +194,38 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# GitHub: zhao818/claude-memory&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Gitee:  Zhaotianbibg1/claude-memory  ← 对齐&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;删除多余仓库后，重新配置镜像：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Gitee 已配镜像还手动 push gitee，做了多余操作</title>
+      <link>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</link>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</guid>
+      <description>&lt;h2 id=&#34;症状&#34;&gt;症状&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;你看到什么？&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;每次 &lt;code&gt;git commit&lt;/code&gt; 后都跑 &lt;code&gt;git push origin master &amp;amp;&amp;amp; git push gitee master&lt;/code&gt;，两条命令都成功。实际上 Gitee 那边早已配置了从 GitHub 自动镜像同步，push origin 之后 Gitee 会自动拉取。手动再 push gitee 不仅多余，还可能在极端情况下导致冲突。&lt;/p&gt;
+&lt;p&gt;更严重的是：&lt;code&gt;git remote&lt;/code&gt; 里 gitee 的 URL 硬编码了 token（&lt;code&gt;Zhaotianbibg1:cfe33...@gitee.com&lt;/code&gt;），每次 push 都明文传输。&lt;/p&gt;
+&lt;h2 id=&#34;根因&#34;&gt;根因&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;到底为什么出问题？&lt;/p&gt;&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;不知道镜像已配&lt;/strong&gt;：Gitee 后台配了 GitHub → Gitee 镜像后，没有删掉本地的 gitee remote&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;习惯性操作&lt;/strong&gt;：之前手动 push 两个 remote 形成习惯，没人提醒就一直做&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;没有&amp;quot;查 remote 列表 → 确认是否冗余&amp;quot;的检查步骤&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;修复&#34;&gt;修复&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;怎么做？&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 删掉 gitee remote（镜像自动同步，不需要手动 push）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote remove gitee
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 确认只剩下 origin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote -v
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (fetch)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (push)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;以后只推 GitHub：&lt;/p&gt;</description>
     </item>
     
     <item>

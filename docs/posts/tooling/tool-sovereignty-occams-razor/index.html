@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,7 +9,7 @@
 <meta name="description" content="他用两天时间在 API 文档的迷宫中碰壁，又用 2 分钟完成了整条内容管线的贯通。这不是技术的胜利，而是一个个体对自己工具主权的夺回——在 API 的高墙下，真正的自由从不来自遵循规范，而来自对“轻量化”近乎偏执的坚持。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/tooling/tool-sovereignty-occams-razor/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.544608da90aadc9e4c41ff9bc4725dbd15a48344b035c1f83074d719dab967c0.css" integrity="sha256-VEYI2pCq3J5MQf&#43;bxHJdvRWkg0SwNcH4MHTXGdq5Z8A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -19,7 +19,7 @@
 <link rel="mask-icon" href="https://worldcorner.xyz/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://worldcorner.xyz/posts/tooling/tool-sovereignty-occams-razor/">
+<link rel="alternate" hreflang="zh" href="https://worldcorner.xyz/posts/tooling/tool-sovereignty-occams-razor/">
 <noscript>
     <style>
         #theme-toggle,
@@ -51,6 +51,177 @@
     }
   }
 }
+</script>
+<script>
+(function () {
+  function init() {
+    var content = document.querySelector('.post-content') || document.querySelector('.pitfall-single');
+    if (!content) return;
+    var titleEl = document.querySelector('.post-title') || content.querySelector('h1');
+    var lang = (document.documentElement.getAttribute('lang') || 'zh').slice(0, 2);
+    var target = lang === 'en' ? 'zh' : 'en';
+    var S = {
+      btn: "🌐 AI 翻译",
+      back: "↩ 返回原文",
+      loading: "AI 翻译中…长文约需一分钟",
+      done: "AI 译文（机器翻译，仅供参考 · 由 worldcorner API 提供）",
+      fail: "翻译失败，请稍后再试"
+    };
+    var API = 'https://api.worldcorner.xyz/community/api/translate';
+    var btn = document.createElement('button');
+    btn.className = 'ai-tr-btn';
+    btn.type = 'button';
+    btn.textContent = S.btn;
+    document.body.appendChild(btn);
+
+    var panel = document.createElement('div');
+    panel.className = 'ai-tr-panel';
+    panel.hidden = true;
+    if (content.parentNode) content.parentNode.insertBefore(panel, content.nextSibling);
+
+    var state = 'orig';
+    var cache = null;
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function toHtml(t) {
+      return t.split(/\n\n+/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    }
+    function call(text) {
+      return fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target: target })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.error) throw new Error(j.error);
+        return j.translated;
+      });
+    }
+    function withRetry(fn, n) {
+      var p = fn();
+      for (var i = 0; i < (n || 1); i++) {
+        p = p.catch(function () { return new Promise(function (res) { setTimeout(res, 1500); }).then(fn); });
+      }
+      return p;
+    }
+    
+
+    function splitClient(text, max) {
+      var paras = text.split(/\n\n+/);
+      var chunks = [];
+      var buf = '';
+      for (var i = 0; i < paras.length; i++) {
+        var p = paras[i].trim();
+        if (!p) continue;
+        if (p.length > max) {
+          if (buf) { chunks.push(buf); buf = ''; }
+          for (var j = 0; j < p.length; j += max) chunks.push(p.slice(j, j + max));
+          continue;
+        }
+        if (buf && (buf + '\n\n' + p).length > max) { chunks.push(buf); buf = p; }
+        else buf = buf ? buf + '\n\n' + p : p;
+      }
+      if (buf) chunks.push(buf);
+      return chunks;
+    }
+    function fetchAll() {
+      if (cache) {
+        panel.innerHTML = (cache.title ? '<h1 class="ai-tr-title"></h1>' : '') + toHtml(cache.body);
+        if (cache.title) panel.querySelector('.ai-tr-title').textContent = cache.title;
+        var doneNote = document.createElement('p');
+        doneNote.className = 'ai-tr-note';
+        doneNote.textContent = S.done;
+        panel.appendChild(doneNote);
+        return Promise.resolve(cache);
+      }
+      var titleText = titleEl ? titleEl.innerText.trim() : '';
+      var chunks = splitClient(content.innerText.trim(), 650);
+      var results = new Array(chunks.length);
+      var done = 0;
+      var head = titleText ? '<h1 class="ai-tr-title"></h1>' : '';
+      var note = document.createElement('p');
+      note.className = 'ai-tr-note';
+      function render() {
+        var html = head;
+        for (var i = 0; i < results.length; i++) if (results[i]) html += toHtml(results[i]);
+        panel.innerHTML = html;
+        note.textContent = done < chunks.length ? done + '/' + chunks.length + ' · ' + S.loading : S.done;
+        panel.appendChild(note);
+      }
+      if (titleText) {
+        withRetry(function () { return call(titleText); }, 1).then(function (t) {
+          if (state === 'trans') { var h1 = panel.querySelector('.ai-tr-title'); if (h1) h1.textContent = t; }
+        }).catch(function () {});
+      }
+      var idx = 0;
+      function lane() {
+        return new Promise(function (resolve) {
+          function next() {
+            if (idx >= chunks.length) return resolve();
+            var i = idx++;
+            withRetry(function () { return call(chunks[i]); }, 2).then(function (t) {
+              results[i] = t; done++; render(); next();
+            }).catch(function () {
+              results[i] = '⚠ ' + S.fail; done++; render(); next();
+            });
+          }
+          next();
+        });
+      }
+      render();
+      return Promise.all([lane(), lane()]).then(function () {
+        cache = { title: titleText, body: results.join('\n\n') };
+        return cache;
+      });
+    }
+    btn.addEventListener('click', function () {
+      if (state === 'trans') {
+        state = 'orig';
+        panel.hidden = true;
+        content.style.display = '';
+        if (titleEl) titleEl.style.display = '';
+        btn.textContent = S.btn;
+        return;
+      }
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = S.loading;
+      if (state === 'orig') {
+        panel.hidden = false;
+        content.style.display = 'none';
+        if (titleEl) titleEl.style.display = 'none';
+        state = 'trans';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      fetchAll().then(function () {
+        state = 'trans';
+        btn.disabled = false;
+        btn.textContent = S.back;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = S.btn;
+        panel.innerHTML = '<p class="ai-tr-note">' + esc(S.fail) + '</p>';
+        panel.hidden = false;
+        state = 'orig';
+      });
+    });
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '.ai-tr-btn{position:fixed;right:18px;bottom:18px;z-index:99;padding:9px 14px;border-radius:999px;',
+      'border:1px solid var(--secondary,#999);background:var(--theme,#fafafa);color:var(--primary,#111);',
+      'font-size:14px;cursor:pointer;opacity:.92;box-shadow:0 2px 10px rgba(0,0,0,.15);}',
+      '.ai-tr-btn:hover{opacity:1}',
+      '.ai-tr-btn:disabled{cursor:wait;opacity:.7}',
+      '.ai-tr-panel{border:1px dashed var(--secondary,#bbb);border-radius:8px;padding:18px 22px;margin:24px 0;line-height:1.8}',
+      '.ai-tr-panel[hidden]{display:none}',
+      '.ai-tr-note{font-size:12px;color:var(--secondary,#888);margin:0 0 12px}',
+      '.ai-tr-title{font-size:1.4em;margin:0 0 16px}'
+    ].join('');
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 <meta property="og:title" content="当一个工程师决定用 AI 打造「个人内容工厂」：关于效率、规则与技术降维的真实实验" />
 <meta property="og:description" content="他用两天时间在 API 文档的迷宫中碰壁，又用 2 分钟完成了整条内容管线的贯通。这不是技术的胜利，而是一个个体对自己工具主权的夺回——在 API 的高墙下，真正的自由从不来自遵循规范，而来自对“轻量化”近乎偏执的坚持。" />
@@ -103,7 +274,7 @@
   ],
   "articleBody": "一、引子：深夜的 WSL 命令行 凌晨一点，光标在 WSL 终端里闪烁。屏幕上是第 14 次 curl 调用返回的 JSON：\n{\u0026#34;errcode\u0026#34;:40001,\u0026#34;errmsg\u0026#34;:\u0026#34;invalid credential\u0026#34;} 不是域名备案的死循环，就是 API 令牌的隐藏规则；不是签名算法文档的暧昧，就是 OAuth 流程中某个神秘的 redirect_uri 校验。每一家平台都像一座围城，用厚厚的 API 文档砌起高墙，对闯入者说：要么遵守我的规则，要么滚。\n而他想要的，只不过是一个简单到近乎原始的需求——把自己写的长文，从 WSL 的终端，推向手机锁屏上的一条通知。\n这听起来像是一个技术宅的自找麻烦。但如果你仔细看，会发现这其实是这个时代每个个体创作者都在面临的困境：我们赖以生存的数字工具，正在被大公司的“标准化”逻辑层层加码。一个简单的念头，包裹在 API 鉴权、域名备案、SSL 证书、Webhook IP 白名单的层层叠叠之中——等它穿透这些门槛时，最初那点灵光早已灰飞烟灭。\n这不是一个技术问题。这是一个系统性问题。\n二、深潜：被“标准化”驯服的创作者 从“内在文明”框架来看，这场个人内容工厂的搭建实验，本质上是 个体与环境之间的一场博弈。\n工具共生论：谁在驾驭谁？ 工具不是中立的。设计者的价值观早已被编码进每一行代码。\n企业微信的 API 文档，是为“企业开发者”写的。它的鉴权流程假设你有法务团队审核隐私条款，有运维管理 SSL 证书，有产品经理梳理 API 调用的业务场景。当你作为一个“个体”去使用它时，你会发现自己被一个错位的身份期望绑架了——平台默认你是组织的一部分，而你不是。\n这就是 工具共生论 所警示的：当工具与使用者的天然规模不匹配时，工具就开始反向塑造使用者。你不是在驾驭工具，而是在为工具的规则做牛做马。调试了三个小时 API 的开发者，和被困在算法推荐里无法自拔的短视频用户，面对的其实是同一个问题——工具本是外骨骼，但你正在变成它的容器。\n环境回路论：谁塑造了谁的认知？ 更深一层，这个困境揭示了 环境回路 的隐秘力量。\n你的物理环境（WSL 终端）、社会环境（没有企业服务团队）、数字环境（微信生态的封闭性）构成了一条完整的回路。在这条回路中，每一次 API 调用的失败不仅仅是代码层面的错误，更是一次“环境记忆”的写入：你开始相信“这事一个人搞不定”，你开始怀疑自己的技术能力，你开始觉得“大公司的东西就该这么复杂”。\n这就是环境回路最阴险的地方——它不声张，只是不断让你碰壁，直到你把壁当作常态。\n真正的突破发生在你跳出这条回路，从更高维度审视它的时候。当意识到“我不是技术不行，而是用错了工具范式”的那一刻，环境回路的锁链就断开了。\n三、破局：技术降维的微小实验 1️⃣ 放弃重型 API，拥抱 Webhook 转折点异常简单：不再去管什么 access_token，不再理会 OAuth 流程。从“与企业系统对接”的思维框架中跳出来，转而问一个更本质的问题：\n我只是想把一段文字从点 A 送到点 B，最短路径是什么？\n答案是：微信群里一个自定义机器人 Webhook。\n没有鉴权协商，没有令牌刷新，没有 IP 白名单。一个 POST 请求，一段 JSON，一行 curl。耗时：2 分钟。\n从意识到问题到解决，2 分钟。而之前被困在 API 迷宫里，是整整两天。\n2️⃣ “如无必要，勿增实体”的工程哲学 这不仅是技术选择，更是哲学选择。奥卡姆剃刀在数字时代的含义是：任何在你与目标之间插入额外步骤的中间件，都是“实体”。\n不需要 n8n 中间件 → 砍掉 不需要定时脚本轮询 → 砍掉 不需要鉴权流程 → 砍掉 不需要域名、备案、IP 白名单 → 全部砍掉 在 AI 时代，“轻量化”不是偷懒，而是一种生存策略。当大公司的“标准化”在不断加厚实体层时，个体创作者的竞争优势恰恰在于可以随时抽身，选择一个更薄的路径。\n3️⃣ 战术退守，战略胜利 这表面上是一场退守——从“接入企业 API”退到“用一个微信群机器人”。但这是一次 降维打击：你不再向大公司的规则体系低头，而是绕开它，找一条它根本没有设防的路。\n从“环境回路论”来看，你重构了自己的数字环境。这条新回路只有两个节点：WSL → 手机。没有 API Gateway，没有双向认证，没有回调 URL。简洁到几乎不可能出问题。\n而从“工具共生论”来看，你重新夺回了主导权——工具不再是你的束缚，而是你随叫随到的仆人。\n四、升华：不被工具驯服的人 这场实验的真正启示不在技术层面，而在认识论层面。\n在 AI 时代，“会的工具越多”不是优势，“越少地依赖工具完成目标”才是。真正的专家不是知道最多 API 端点的人，而是知道什么时候 不 用 API 的人。\n我们正在进入一个 工具通胀 的时代：每天的 SaaS 服务新上市数量、AI 工具的迭代频率、API 版本的废弃周期，都已经超过了人类的认知带宽。在这样的环境中，焦虑不是来自工具不够，而是来自被工具绑架的太深。\n“内在文明”给出的方向是清晰的：\n不为工具做加法，而为目标做减法。\n回到那个最初的深夜：光标闪烁，终端吐出一行 errcode 40001。2 分钟后，一篇深度长文从 WSL 自动飞向了手机。没有中间件、没有 OAuth、没有 SSL 证书。只有一行命令，和一个清醒到知道自己想要什么的人。\n✨ 金句 “这不只是战术退守——在 API 的高墙面前，绕过去比撞破它需要更多的清醒。”\n“真正的工具驾驭，不是会用好多少 API，而是知道什么时候扔掉所有 API，只用一行 curl。”\n“当工具开始定义你的路径而非扩展你的能力时，你就已经不是使用工具的人了——你只是它规则里的一个参数。”\n本文收录于《世界一隅》专栏，探讨在 AI 时代如何做一个清醒的使用者而非被使用者。\n“这不只是战术退守——在 API 的高墙面前，绕过去比撞破它需要更多的清醒。”\n“真正的工具驾驭，不是会用好多少 API，而是知道什么时候扔掉所有 API，只用一行 curl。”\n“当工具开始定义你的路径而非扩展你的能力时，你就已经不是使用工具的人了——你只是它规则里的一个参数。”\n本文收录于《世界一隅》专栏，探讨在 AI 时代如何做一个清醒的使用者而非被使用者。\n本文收录于《世界一隅》专栏，探讨在 AI 时代如何做一个清醒的使用者而非被使用者。\n",
   "wordCount" : "175",
-  "inLanguage": "en",
+  "inLanguage": "zh",
   "datePublished": "2026-05-18 21:42:52 \u002b0800 \u002b0800",
   "dateModified": "2026-05-18 21:42:52 \u002b0800 \u002b0800",
   "author":{
@@ -161,6 +332,10 @@
                     </svg>
                 </button>
                 <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://worldcorner.xyz/en/" title="English"
+                            aria-label="English">En</a>
+                    </li>
                 </ul>
             </div>
         </div>

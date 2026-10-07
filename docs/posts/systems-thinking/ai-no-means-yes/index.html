@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,7 +9,7 @@
 <meta name="description" content="AI的&#39;不&#39;不是拒绝，是缺了一块拼图。你补上，它就通了。">
 <meta name="author" content="美好需要创造">
 <link rel="canonical" href="https://worldcorner.xyz/posts/systems-thinking/ai-no-means-yes/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.544608da90aadc9e4c41ff9bc4725dbd15a48344b035c1f83074d719dab967c0.css" integrity="sha256-VEYI2pCq3J5MQf&#43;bxHJdvRWkg0SwNcH4MHTXGdq5Z8A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -19,7 +19,7 @@
 <link rel="mask-icon" href="https://worldcorner.xyz/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://worldcorner.xyz/posts/systems-thinking/ai-no-means-yes/">
+<link rel="alternate" hreflang="zh" href="https://worldcorner.xyz/posts/systems-thinking/ai-no-means-yes/">
 <noscript>
     <style>
         #theme-toggle,
@@ -51,6 +51,177 @@
     }
   }
 }
+</script>
+<script>
+(function () {
+  function init() {
+    var content = document.querySelector('.post-content') || document.querySelector('.pitfall-single');
+    if (!content) return;
+    var titleEl = document.querySelector('.post-title') || content.querySelector('h1');
+    var lang = (document.documentElement.getAttribute('lang') || 'zh').slice(0, 2);
+    var target = lang === 'en' ? 'zh' : 'en';
+    var S = {
+      btn: "🌐 AI 翻译",
+      back: "↩ 返回原文",
+      loading: "AI 翻译中…长文约需一分钟",
+      done: "AI 译文（机器翻译，仅供参考 · 由 worldcorner API 提供）",
+      fail: "翻译失败，请稍后再试"
+    };
+    var API = 'https://api.worldcorner.xyz/community/api/translate';
+    var btn = document.createElement('button');
+    btn.className = 'ai-tr-btn';
+    btn.type = 'button';
+    btn.textContent = S.btn;
+    document.body.appendChild(btn);
+
+    var panel = document.createElement('div');
+    panel.className = 'ai-tr-panel';
+    panel.hidden = true;
+    if (content.parentNode) content.parentNode.insertBefore(panel, content.nextSibling);
+
+    var state = 'orig';
+    var cache = null;
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function toHtml(t) {
+      return t.split(/\n\n+/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    }
+    function call(text) {
+      return fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target: target })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.error) throw new Error(j.error);
+        return j.translated;
+      });
+    }
+    function withRetry(fn, n) {
+      var p = fn();
+      for (var i = 0; i < (n || 1); i++) {
+        p = p.catch(function () { return new Promise(function (res) { setTimeout(res, 1500); }).then(fn); });
+      }
+      return p;
+    }
+    
+
+    function splitClient(text, max) {
+      var paras = text.split(/\n\n+/);
+      var chunks = [];
+      var buf = '';
+      for (var i = 0; i < paras.length; i++) {
+        var p = paras[i].trim();
+        if (!p) continue;
+        if (p.length > max) {
+          if (buf) { chunks.push(buf); buf = ''; }
+          for (var j = 0; j < p.length; j += max) chunks.push(p.slice(j, j + max));
+          continue;
+        }
+        if (buf && (buf + '\n\n' + p).length > max) { chunks.push(buf); buf = p; }
+        else buf = buf ? buf + '\n\n' + p : p;
+      }
+      if (buf) chunks.push(buf);
+      return chunks;
+    }
+    function fetchAll() {
+      if (cache) {
+        panel.innerHTML = (cache.title ? '<h1 class="ai-tr-title"></h1>' : '') + toHtml(cache.body);
+        if (cache.title) panel.querySelector('.ai-tr-title').textContent = cache.title;
+        var doneNote = document.createElement('p');
+        doneNote.className = 'ai-tr-note';
+        doneNote.textContent = S.done;
+        panel.appendChild(doneNote);
+        return Promise.resolve(cache);
+      }
+      var titleText = titleEl ? titleEl.innerText.trim() : '';
+      var chunks = splitClient(content.innerText.trim(), 650);
+      var results = new Array(chunks.length);
+      var done = 0;
+      var head = titleText ? '<h1 class="ai-tr-title"></h1>' : '';
+      var note = document.createElement('p');
+      note.className = 'ai-tr-note';
+      function render() {
+        var html = head;
+        for (var i = 0; i < results.length; i++) if (results[i]) html += toHtml(results[i]);
+        panel.innerHTML = html;
+        note.textContent = done < chunks.length ? done + '/' + chunks.length + ' · ' + S.loading : S.done;
+        panel.appendChild(note);
+      }
+      if (titleText) {
+        withRetry(function () { return call(titleText); }, 1).then(function (t) {
+          if (state === 'trans') { var h1 = panel.querySelector('.ai-tr-title'); if (h1) h1.textContent = t; }
+        }).catch(function () {});
+      }
+      var idx = 0;
+      function lane() {
+        return new Promise(function (resolve) {
+          function next() {
+            if (idx >= chunks.length) return resolve();
+            var i = idx++;
+            withRetry(function () { return call(chunks[i]); }, 2).then(function (t) {
+              results[i] = t; done++; render(); next();
+            }).catch(function () {
+              results[i] = '⚠ ' + S.fail; done++; render(); next();
+            });
+          }
+          next();
+        });
+      }
+      render();
+      return Promise.all([lane(), lane()]).then(function () {
+        cache = { title: titleText, body: results.join('\n\n') };
+        return cache;
+      });
+    }
+    btn.addEventListener('click', function () {
+      if (state === 'trans') {
+        state = 'orig';
+        panel.hidden = true;
+        content.style.display = '';
+        if (titleEl) titleEl.style.display = '';
+        btn.textContent = S.btn;
+        return;
+      }
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = S.loading;
+      if (state === 'orig') {
+        panel.hidden = false;
+        content.style.display = 'none';
+        if (titleEl) titleEl.style.display = 'none';
+        state = 'trans';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      fetchAll().then(function () {
+        state = 'trans';
+        btn.disabled = false;
+        btn.textContent = S.back;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = S.btn;
+        panel.innerHTML = '<p class="ai-tr-note">' + esc(S.fail) + '</p>';
+        panel.hidden = false;
+        state = 'orig';
+      });
+    });
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '.ai-tr-btn{position:fixed;right:18px;bottom:18px;z-index:99;padding:9px 14px;border-radius:999px;',
+      'border:1px solid var(--secondary,#999);background:var(--theme,#fafafa);color:var(--primary,#111);',
+      'font-size:14px;cursor:pointer;opacity:.92;box-shadow:0 2px 10px rgba(0,0,0,.15);}',
+      '.ai-tr-btn:hover{opacity:1}',
+      '.ai-tr-btn:disabled{cursor:wait;opacity:.7}',
+      '.ai-tr-panel{border:1px dashed var(--secondary,#bbb);border-radius:8px;padding:18px 22px;margin:24px 0;line-height:1.8}',
+      '.ai-tr-panel[hidden]{display:none}',
+      '.ai-tr-note{font-size:12px;color:var(--secondary,#888);margin:0 0 12px}',
+      '.ai-tr-title{font-size:1.4em;margin:0 0 16px}'
+    ].join('');
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 <meta property="og:title" content="AI说不行的时候" />
 <meta property="og:description" content="AI的&#39;不&#39;不是拒绝，是缺了一块拼图。你补上，它就通了。" />
@@ -103,7 +274,7 @@
   ],
   "articleBody": "每次 Claude 说\u0026quot;我做不到\u0026quot;的时候，恰恰是真正的工作开始的时刻。\n今天我让它帮我发求职邮件。六封。\n它说不行——没有邮箱授权码。我给了它。它写了一个 Python 脚本，六封邮件在三十秒内全部发出。然后它说不能读回信——没有 IMAP。我给了它。它架了一个心跳监控，每两个半小时扫一次收件箱，匹配到我投递的那几家公司，有真人回复立刻通知。\n从\u0026quot;发不了邮件\u0026quot;到全自动求职管线，只用了两个小时。但这两个小时里最重要的工序，不是 AI 做了什么，而是我在每一次它说\u0026quot;不行\u0026quot;的时候做了同一件事：不给它答案，给它一把钥匙。\n一、\u0026ldquo;不行\u0026quot;不是一个结论，是一个接口 绝大多数人把 AI 的拒绝当作结果：\u0026ldquo;你看，它做不到。\u0026ldquo;然后放弃。\n但你仔细听 AI 说\u0026quot;不行\u0026quot;的时候，它的措辞其实很精确。它不会说\u0026quot;这件事不可能\u0026rdquo;，它会说\u0026quot;我需要 X，但我现在没有 X\u0026rdquo;。\nX 可能是一个授权码。一个浏览器插件。一个账号密码。一个被你忽略的配置文件。\n你以为它卡在能力边界上，其实它卡在权限边界上。区别在于：能力是它的事，权限是你的事。你把权限给它，它自己会搞定能力。\n这不是我发现的规律。这是软件工程里的老道理——\u0026ldquo;关注点分离\u0026rdquo;——但放到人机协作里，突然变得锋利起来。\n二、最具杠杆效应的贡献，往往最短 整个求职管线里，我的贡献只有两次，每次不超过三十秒。\n第一次：打开 QQ 邮箱，点设置，生成一个 SMTP 授权码。第二次：同样的授权码，告诉它 IMAP 服务器地址。\n就这两次。剩下的——简历整理、邮件措辞、收件人匹配、发送时序、监控脚本、夜间休眠逻辑、回复分类——全是它做的。\n这很像建筑工地的测量放线：你定三个桩，工人照着干一整个月。桩偏了，全偏了；桩对了，剩下的都是体力活。\nAI 时代最高杠杆的动作，不是\u0026quot;干得最多\u0026rdquo;，而是\u0026quot;给得最准\u0026quot;。给一个授权码，解锁一整条管线。给一句\u0026quot;试试 SMTP\u0026quot;，打通一个你以为不可能的事情。\n三、它不会主动问你要钥匙，你得自己知道哪里有门 这是整件事里最难的部分。\nClaude 第一次拒绝时，它说的是\u0026quot;我没有你的邮箱密码，也没法替你登录\u0026quot;。它不是让我去生成 SMTP 授权码。它甚至没提 SMTP 这条路。\n这条路是我自己知道的——我知道 QQ 邮箱有 SMTP，知道可以用 Python 的 smtplib，知道授权码和密码不一样。如果你不知道这些，对话在\u0026quot;我没法替你登录\u0026quot;就结束了。\n所以真正的门槛不是你愿不愿意推下去，是你有没有推下去的知识储备。\n这听起来像是在说\u0026quot;你得先懂技术才行\u0026quot;，但不是。你不必懂 smtplib 的语法，但你得懂**\u0026ldquo;这事儿理论上能通\u0026rdquo;**。比如你知道邮箱可以第三方客户端登录，那就能追问一句\u0026quot;能不能用 SMTP 那种方式发\u0026quot;。一句话就够了。AI 会把余下的代码写了。\n你需要的不是技术，是方向感。\n四、人与 AI 的新分工 旧分工是：人想，人做。\nAI 出现后的第一代分工是：人想，AI 做。\n现在进化到第二代：人指方向，AI 铺路；人给钥匙，AI 开门。\n这项技能没有教科书，但它有一条简单的训练方法：每次 AI 说\u0026quot;不行\u0026quot;，别关掉窗口。多问一句——\u0026ldquo;缺什么？\u0026ldquo;\u0026ldquo;有没有别的方式？\u0026ldquo;\u0026ldquo;如果我要做到这件事，需要给你什么？\u0026rdquo;\n问三次，答案通常就会出现。\n因为 AI 的\u0026quot;不行\u0026quot;往往不是真正的边界，而是一个被编码在系统里的安全护栏。你给对东西，护栏就撤了。\n但这也意味着，AI 永远不会\u0026quot;主动\u0026quot;帮你想出超越它权限的方案。那把钥匙必须由你来想。\n这不是 bug。这是 feature。\n这恰好反向印证了《AI审AI》的核心发现——单独一个AI有盲区，需要多角度的交叉审视。但多角度审视的前提是，你作为人，知道该给哪个角度一把钥匙。\n核心要点 AI的\u0026quot;不\u0026quot;不是结论，是接口。 它不会说\u0026quot;这不可能\u0026rdquo;，它会说\u0026quot;我需要X但我现在没有X\u0026rdquo;。X通常是权限，不是能力。 AI时代最高杠杆不是干得最多，而是给得最准。 三十秒生成一个授权码，解锁一整条自动化管线。 人指方向，AI铺路。 你需要的不是技术，是方向感——知道\u0026quot;这事儿理论上能通\u0026rdquo;，然后追问\u0026quot;缺什么\u0026rdquo;。 每次AI说不行，问三次。 缺什么？有没有别的方式？需要给你什么？答案通常就会出现。 ✦ 人的天花板，在 AI 说\u0026quot;不\u0026quot;之后还有多高。\n",
   "wordCount" : "97",
-  "inLanguage": "en",
+  "inLanguage": "zh",
   "datePublished": "2026-06-11 00:00:00 \u002b0000 UTC",
   "dateModified": "2026-06-11 00:00:00 \u002b0000 UTC",
   "author":{
@@ -161,6 +332,10 @@
                     </svg>
                 </button>
                 <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://worldcorner.xyz/en/" title="English"
+                            aria-label="English">En</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -460,6 +635,13 @@
           </a>
         </li>
         <li>
+          <a href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/"
+             class="series-capsule series-systems-thinking"
+             title="内在文明与认知工程">
+            内在文明与认知工程
+          </a>
+        </li>
+        <li>
           <a href="https://worldcorner.xyz/posts/systems-thinking/outward-and-inward/"
              class="series-capsule series-systems-thinking"
              title="人生的向外与向内">
@@ -467,10 +649,10 @@
           </a>
         </li>
         <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/"
+          <a href="https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/"
              class="series-capsule series-systems-thinking"
-             title="内在文明与认知工程">
-            内在文明与认知工程
+             title="生育焦虑的背后">
+            生育焦虑的背后
           </a>
         </li>
         <li>
@@ -485,13 +667,6 @@
              class="series-capsule series-systems-thinking"
              title="文明进阶的关键因素">
             文明进阶的关键因素
-          </a>
-        </li>
-        <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/"
-             class="series-capsule series-systems-thinking"
-             title="生育焦虑的背后">
-            生育焦虑的背后
           </a>
         </li>
         <li>
@@ -558,17 +733,17 @@
           </a>
         </li>
         <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/"
-             class="series-capsule series-systems-thinking"
-             title="在系统的噪音中，重构灵魂的索引">
-            在系统的噪音中，重构灵魂的索引
-          </a>
-        </li>
-        <li>
           <a href="https://worldcorner.xyz/posts/systems-thinking/2026-05-01-the-api-of-relationships/"
              class="series-capsule series-systems-thinking"
              title="社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话">
             社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话
+          </a>
+        </li>
+        <li>
+          <a href="https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/"
+             class="series-capsule series-systems-thinking"
+             title="在系统的噪音中，重构灵魂的索引">
+            在系统的噪音中，重构灵魂的索引
           </a>
         </li>
         <li>

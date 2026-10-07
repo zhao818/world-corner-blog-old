@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,7 +9,7 @@
 <meta name="description" content="真正的进步，始于我们如何优化自己的认知操作系统。">
 <meta name="author" content="美好需要创造">
 <link rel="canonical" href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.544608da90aadc9e4c41ff9bc4725dbd15a48344b035c1f83074d719dab967c0.css" integrity="sha256-VEYI2pCq3J5MQf&#43;bxHJdvRWkg0SwNcH4MHTXGdq5Z8A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -19,7 +19,7 @@
 <link rel="mask-icon" href="https://worldcorner.xyz/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/">
+<link rel="alternate" hreflang="zh" href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/">
 <noscript>
     <style>
         #theme-toggle,
@@ -51,6 +51,177 @@
     }
   }
 }
+</script>
+<script>
+(function () {
+  function init() {
+    var content = document.querySelector('.post-content') || document.querySelector('.pitfall-single');
+    if (!content) return;
+    var titleEl = document.querySelector('.post-title') || content.querySelector('h1');
+    var lang = (document.documentElement.getAttribute('lang') || 'zh').slice(0, 2);
+    var target = lang === 'en' ? 'zh' : 'en';
+    var S = {
+      btn: "🌐 AI 翻译",
+      back: "↩ 返回原文",
+      loading: "AI 翻译中…长文约需一分钟",
+      done: "AI 译文（机器翻译，仅供参考 · 由 worldcorner API 提供）",
+      fail: "翻译失败，请稍后再试"
+    };
+    var API = 'https://api.worldcorner.xyz/community/api/translate';
+    var btn = document.createElement('button');
+    btn.className = 'ai-tr-btn';
+    btn.type = 'button';
+    btn.textContent = S.btn;
+    document.body.appendChild(btn);
+
+    var panel = document.createElement('div');
+    panel.className = 'ai-tr-panel';
+    panel.hidden = true;
+    if (content.parentNode) content.parentNode.insertBefore(panel, content.nextSibling);
+
+    var state = 'orig';
+    var cache = null;
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function toHtml(t) {
+      return t.split(/\n\n+/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    }
+    function call(text) {
+      return fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target: target })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.error) throw new Error(j.error);
+        return j.translated;
+      });
+    }
+    function withRetry(fn, n) {
+      var p = fn();
+      for (var i = 0; i < (n || 1); i++) {
+        p = p.catch(function () { return new Promise(function (res) { setTimeout(res, 1500); }).then(fn); });
+      }
+      return p;
+    }
+    
+
+    function splitClient(text, max) {
+      var paras = text.split(/\n\n+/);
+      var chunks = [];
+      var buf = '';
+      for (var i = 0; i < paras.length; i++) {
+        var p = paras[i].trim();
+        if (!p) continue;
+        if (p.length > max) {
+          if (buf) { chunks.push(buf); buf = ''; }
+          for (var j = 0; j < p.length; j += max) chunks.push(p.slice(j, j + max));
+          continue;
+        }
+        if (buf && (buf + '\n\n' + p).length > max) { chunks.push(buf); buf = p; }
+        else buf = buf ? buf + '\n\n' + p : p;
+      }
+      if (buf) chunks.push(buf);
+      return chunks;
+    }
+    function fetchAll() {
+      if (cache) {
+        panel.innerHTML = (cache.title ? '<h1 class="ai-tr-title"></h1>' : '') + toHtml(cache.body);
+        if (cache.title) panel.querySelector('.ai-tr-title').textContent = cache.title;
+        var doneNote = document.createElement('p');
+        doneNote.className = 'ai-tr-note';
+        doneNote.textContent = S.done;
+        panel.appendChild(doneNote);
+        return Promise.resolve(cache);
+      }
+      var titleText = titleEl ? titleEl.innerText.trim() : '';
+      var chunks = splitClient(content.innerText.trim(), 650);
+      var results = new Array(chunks.length);
+      var done = 0;
+      var head = titleText ? '<h1 class="ai-tr-title"></h1>' : '';
+      var note = document.createElement('p');
+      note.className = 'ai-tr-note';
+      function render() {
+        var html = head;
+        for (var i = 0; i < results.length; i++) if (results[i]) html += toHtml(results[i]);
+        panel.innerHTML = html;
+        note.textContent = done < chunks.length ? done + '/' + chunks.length + ' · ' + S.loading : S.done;
+        panel.appendChild(note);
+      }
+      if (titleText) {
+        withRetry(function () { return call(titleText); }, 1).then(function (t) {
+          if (state === 'trans') { var h1 = panel.querySelector('.ai-tr-title'); if (h1) h1.textContent = t; }
+        }).catch(function () {});
+      }
+      var idx = 0;
+      function lane() {
+        return new Promise(function (resolve) {
+          function next() {
+            if (idx >= chunks.length) return resolve();
+            var i = idx++;
+            withRetry(function () { return call(chunks[i]); }, 2).then(function (t) {
+              results[i] = t; done++; render(); next();
+            }).catch(function () {
+              results[i] = '⚠ ' + S.fail; done++; render(); next();
+            });
+          }
+          next();
+        });
+      }
+      render();
+      return Promise.all([lane(), lane()]).then(function () {
+        cache = { title: titleText, body: results.join('\n\n') };
+        return cache;
+      });
+    }
+    btn.addEventListener('click', function () {
+      if (state === 'trans') {
+        state = 'orig';
+        panel.hidden = true;
+        content.style.display = '';
+        if (titleEl) titleEl.style.display = '';
+        btn.textContent = S.btn;
+        return;
+      }
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = S.loading;
+      if (state === 'orig') {
+        panel.hidden = false;
+        content.style.display = 'none';
+        if (titleEl) titleEl.style.display = 'none';
+        state = 'trans';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      fetchAll().then(function () {
+        state = 'trans';
+        btn.disabled = false;
+        btn.textContent = S.back;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = S.btn;
+        panel.innerHTML = '<p class="ai-tr-note">' + esc(S.fail) + '</p>';
+        panel.hidden = false;
+        state = 'orig';
+      });
+    });
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '.ai-tr-btn{position:fixed;right:18px;bottom:18px;z-index:99;padding:9px 14px;border-radius:999px;',
+      'border:1px solid var(--secondary,#999);background:var(--theme,#fafafa);color:var(--primary,#111);',
+      'font-size:14px;cursor:pointer;opacity:.92;box-shadow:0 2px 10px rgba(0,0,0,.15);}',
+      '.ai-tr-btn:hover{opacity:1}',
+      '.ai-tr-btn:disabled{cursor:wait;opacity:.7}',
+      '.ai-tr-panel{border:1px dashed var(--secondary,#bbb);border-radius:8px;padding:18px 22px;margin:24px 0;line-height:1.8}',
+      '.ai-tr-panel[hidden]{display:none}',
+      '.ai-tr-note{font-size:12px;color:var(--secondary,#888);margin:0 0 12px}',
+      '.ai-tr-title{font-size:1.4em;margin:0 0 16px}'
+    ].join('');
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 <meta property="og:title" content="内在文明与认知工程" />
 <meta property="og:description" content="真正的进步，始于我们如何优化自己的认知操作系统。" />
@@ -103,7 +274,7 @@
   ],
   "articleBody": "你是否感到：专注力破碎，难以进入并保持深度的思考状态？被情绪和焦虑消耗，难以获得持久的内心平静？刷着永无止境的短视频，却时常感到内心空洞？\n这是一场针对现代人心智状态的系统实验——一个名为\u0026quot;内在文明：认知能量工程\u0026quot;的开放框架。真正的进步，始于我们如何优化自己的认知操作系统。\n壹 · 从流量争夺到内心构建 一场始于互联网巨头市值竞争的讨论，意外地开启了关于人类精神困境的深度探索。\n讨论始于一个看似简单的问题：为什么我们明明拥有如此多的信息、如此便捷的连接，却感到越来越孤独、越来越焦虑？核心矛盾在于，我们的外部世界已经进化到了信息时代，但我们的内在操作系统仍然运行在古老的版本上。\n算法不是为了让我们幸福而设计的。它们是为了让我们停留。每一次刷屏，都是一场注意力的微小博弈。你以为是你在消费内容，实际上是内容在消费你。\n但从商业竞争的表象直抵个体内心构建的核心，你会发现一条出路：收回注意力，转向内心。不是逃避世界，而是重建自己与世界的关系。\n贰 · 心境的频率 学习，本质上不仅是一种知识的获取，更是一场内心的旅程。每个人都有过这样的体验：有时，书本上的文字如过眼云烟，难以入心；而有时，却文思泉涌，知识如清泉般自然流淌。\n这其中的关键，往往不在于学习内容的难易，而在于我们内心的\u0026quot;情绪频率\u0026quot;是否与学习这项活动产生了和谐的共振。当心境处于最佳状态时，知识不只是被接收——它被吸收、被重组、被内化为你的一部分。\n这种状态不是天赋，是可以训练的能力。通过调整情绪频率、营造专注环境、建立深度学习节奏，一个人可以逐步抵达那个最适合认知成长的\u0026quot;甜蜜点\u0026quot;。\n叁 · 启动你的内在文明实验 这不是一个课程、一个工作坊，或一套方法论。它是一次针对现代人心智状态的系统实验。\n我们邀请你参与并共同建造的，是一个名为\u0026quot;内在文明：认知能量工程\u0026quot;的开放框架。核心命题只有一个：如何在算法洪流中，守护并壮大属于自己的内在秩序？\n具体来说，就是三个动作：\n第一，止损。 减少无意识的信息消费。每一次打开手机前问自己：我是在获取信息，还是在逃避空白？空白不是敌人。空白是思考开始的地方。\n第二，重建。 建立深度学习节奏。不是学更多，而是学更深。一天只读一篇长文，比刷一百条短视频更能滋养认知。\n第三，生成。 将输入转化为输出。写一段话，画一张图，做一个小项目。创造是对抗消费的唯一武器。当你从消费者变成创造者，你与世界的关系就彻底改变了。\n这三个动作——止损、重建、生成——本质上就是《文明进阶的关键因素》中讨论的\u0026quot;认知酿蜜术\u0026quot;：信息输入只是采集花粉，思考、重组、输出才是酿蜜。\n核心要点 算法不是为了让你幸福，是为了让你停留。 每一次刷屏都是一场注意力的微小博弈——你以为是你在消费内容，实际上是内容在消费你。 学习的效率取决于心境的频率。 当内心情绪频率与学习活动共振时，知识自然内化。这种能力可训练。 止损→重建→生成。 减少无意识消费，建立深度学习节奏，将输入转化为输出。创造是对抗消费的唯一武器。 结语 文明的进阶，不只发生在外部——高楼、芯片、AI。它同样、甚至首先发生在内部。\n在信息爆炸的数字时代，我们被裹挟在算法的洪流中。然而真正的力量从不来自外面的喧哗，而是来自于你能否在风暴中心，维持一片属于自己的寂静。\n那寂静里，才是你的文明开始的地方。\n",
   "wordCount" : "39",
-  "inLanguage": "en",
+  "inLanguage": "zh",
   "datePublished": "2026-06-12 00:00:00 \u002b0000 UTC",
   "dateModified": "2026-06-12 00:00:00 \u002b0000 UTC",
   "author":{
@@ -161,6 +332,10 @@
                     </svg>
                 </button>
                 <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://worldcorner.xyz/en/" title="English"
+                            aria-label="English">En</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -447,6 +622,13 @@
           </a>
         </li>
         <li>
+          <a href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/"
+             class="series-capsule series-systems-thinking active"
+             title="内在文明与认知工程">
+            内在文明与认知工程
+          </a>
+        </li>
+        <li>
           <a href="https://worldcorner.xyz/posts/systems-thinking/outward-and-inward/"
              class="series-capsule series-systems-thinking"
              title="人生的向外与向内">
@@ -454,10 +636,10 @@
           </a>
         </li>
         <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/"
-             class="series-capsule series-systems-thinking active"
-             title="内在文明与认知工程">
-            内在文明与认知工程
+          <a href="https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/"
+             class="series-capsule series-systems-thinking"
+             title="生育焦虑的背后">
+            生育焦虑的背后
           </a>
         </li>
         <li>
@@ -472,13 +654,6 @@
              class="series-capsule series-systems-thinking"
              title="文明进阶的关键因素">
             文明进阶的关键因素
-          </a>
-        </li>
-        <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/"
-             class="series-capsule series-systems-thinking"
-             title="生育焦虑的背后">
-            生育焦虑的背后
           </a>
         </li>
         <li>
@@ -545,17 +720,17 @@
           </a>
         </li>
         <li>
-          <a href="https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/"
-             class="series-capsule series-systems-thinking"
-             title="在系统的噪音中，重构灵魂的索引">
-            在系统的噪音中，重构灵魂的索引
-          </a>
-        </li>
-        <li>
           <a href="https://worldcorner.xyz/posts/systems-thinking/2026-05-01-the-api-of-relationships/"
              class="series-capsule series-systems-thinking"
              title="社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话">
             社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话
+          </a>
+        </li>
+        <li>
+          <a href="https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/"
+             class="series-capsule series-systems-thinking"
+             title="在系统的噪音中，重构灵魂的索引">
+            在系统的噪音中，重构灵魂的索引
           </a>
         </li>
         <li>

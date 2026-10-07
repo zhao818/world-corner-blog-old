@@ -342,38 +342,6 @@
     </item>
     
     <item>
-      <title>Gitee 已配镜像还手动 push gitee，做了多余操作</title>
-      <link>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</link>
-      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
-      
-      <guid>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</guid>
-      <description>&lt;h2 id=&#34;症状&#34;&gt;症状&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;你看到什么？&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;每次 &lt;code&gt;git commit&lt;/code&gt; 后都跑 &lt;code&gt;git push origin master &amp;amp;&amp;amp; git push gitee master&lt;/code&gt;，两条命令都成功。实际上 Gitee 那边早已配置了从 GitHub 自动镜像同步，push origin 之后 Gitee 会自动拉取。手动再 push gitee 不仅多余，还可能在极端情况下导致冲突。&lt;/p&gt;
-&lt;p&gt;更严重的是：&lt;code&gt;git remote&lt;/code&gt; 里 gitee 的 URL 硬编码了 token（&lt;code&gt;Zhaotianbibg1:cfe33...@gitee.com&lt;/code&gt;），每次 push 都明文传输。&lt;/p&gt;
-&lt;h2 id=&#34;根因&#34;&gt;根因&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;到底为什么出问题？&lt;/p&gt;&lt;/blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;不知道镜像已配&lt;/strong&gt;：Gitee 后台配了 GitHub → Gitee 镜像后，没有删掉本地的 gitee remote&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;习惯性操作&lt;/strong&gt;：之前手动 push 两个 remote 形成习惯，没人提醒就一直做&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;没有&amp;quot;查 remote 列表 → 确认是否冗余&amp;quot;的检查步骤&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;修复&#34;&gt;修复&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;怎么做？&lt;/p&gt;&lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 删掉 gitee remote（镜像自动同步，不需要手动 push）&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote remove gitee
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 确认只剩下 origin&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote -v
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (fetch)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (push)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;以后只推 GitHub：&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>Gitee 建仓库前没查已有仓库，建了重复仓库</title>
       <link>https://worldcorner.xyz/pitfalls/pit-gitee-duplicate-repo-check/</link>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
@@ -415,6 +383,38 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# GitHub: zhao818/claude-memory&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Gitee:  Zhaotianbibg1/claude-memory  ← 对齐&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;删除多余仓库后，重新配置镜像：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Gitee 已配镜像还手动 push gitee，做了多余操作</title>
+      <link>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</link>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://worldcorner.xyz/pitfalls/pit-gitee-mirror-dual-push/</guid>
+      <description>&lt;h2 id=&#34;症状&#34;&gt;症状&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;你看到什么？&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;每次 &lt;code&gt;git commit&lt;/code&gt; 后都跑 &lt;code&gt;git push origin master &amp;amp;&amp;amp; git push gitee master&lt;/code&gt;，两条命令都成功。实际上 Gitee 那边早已配置了从 GitHub 自动镜像同步，push origin 之后 Gitee 会自动拉取。手动再 push gitee 不仅多余，还可能在极端情况下导致冲突。&lt;/p&gt;
+&lt;p&gt;更严重的是：&lt;code&gt;git remote&lt;/code&gt; 里 gitee 的 URL 硬编码了 token（&lt;code&gt;Zhaotianbibg1:cfe33...@gitee.com&lt;/code&gt;），每次 push 都明文传输。&lt;/p&gt;
+&lt;h2 id=&#34;根因&#34;&gt;根因&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;到底为什么出问题？&lt;/p&gt;&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;不知道镜像已配&lt;/strong&gt;：Gitee 后台配了 GitHub → Gitee 镜像后，没有删掉本地的 gitee remote&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;习惯性操作&lt;/strong&gt;：之前手动 push 两个 remote 形成习惯，没人提醒就一直做&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;没有&amp;quot;查 remote 列表 → 确认是否冗余&amp;quot;的检查步骤&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;修复&#34;&gt;修复&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;怎么做？&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 删掉 gitee remote（镜像自动同步，不需要手动 push）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote remove gitee
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 确认只剩下 origin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git remote -v
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (fetch)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# origin  https://github.com/zhao818/claude-memory.git (push)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;以后只推 GitHub：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -750,6 +750,15 @@ Write 工具：/home/zhaotianbing/claude-memory → WSL 原生 FS → 文件孤�
     </item>
     
     <item>
+      <title>阅读指南：为什么文学比心理学更懂人心</title>
+      <link>https://worldcorner.xyz/posts/systems-thinking/2026-06-13-intro-literary-happiness/</link>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://worldcorner.xyz/posts/systems-thinking/2026-06-13-intro-literary-happiness/</guid>
+      <description>文学经典不是用来分析的理论，而是我们已经历过却尚未理解的人生。</description>
+    </item>
+    
+    <item>
       <title>长时间规划结束忘记 commit 丢失进度</title>
       <link>https://worldcorner.xyz/pitfalls/pit-plan-lost-not-committed/</link>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
@@ -783,12 +792,21 @@ Write 工具：/home/zhaotianbing/claude-memory → WSL 原生 FS → 文件孤�
     </item>
     
     <item>
-      <title>阅读指南：为什么文学比心理学更懂人心</title>
-      <link>https://worldcorner.xyz/posts/systems-thinking/2026-06-13-intro-literary-happiness/</link>
-      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <title>经济学思维：看清世界的另一双眼睛</title>
+      <link>https://worldcorner.xyz/posts/learning/economic-thinking/</link>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://worldcorner.xyz/posts/systems-thinking/2026-06-13-intro-literary-happiness/</guid>
-      <description>文学经典不是用来分析的理论，而是我们已经历过却尚未理解的人生。</description>
+      <guid>https://worldcorner.xyz/posts/learning/economic-thinking/</guid>
+      <description>为什么钻石比水贵，水却比钻石重要？经济学的答案让你重新认识世界。</description>
+    </item>
+    
+    <item>
+      <title>内在文明与认知工程</title>
+      <link>https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/</link>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/</guid>
+      <description>真正的进步，始于我们如何优化自己的认知操作系统。</description>
     </item>
     
     <item>
@@ -801,12 +819,12 @@ Write 工具：/home/zhaotianbing/claude-memory → WSL 原生 FS → 文件孤�
     </item>
     
     <item>
-      <title>内在文明与认知工程</title>
-      <link>https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/</link>
+      <title>生育焦虑的背后</title>
+      <link>https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/</link>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://worldcorner.xyz/posts/systems-thinking/inner-civilization-cognition/</guid>
-      <description>真正的进步，始于我们如何优化自己的认知操作系统。</description>
+      <guid>https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/</guid>
+      <description>一场关于人何以为人的哲学对话，远远超越了人口统计学的范畴。</description>
     </item>
     
     <item>
@@ -825,24 +843,6 @@ Write 工具：/home/zhaotianbing/claude-memory → WSL 原生 FS → 文件孤�
       
       <guid>https://worldcorner.xyz/posts/systems-thinking/civilization-key-factor/</guid>
       <description>向昆虫学习——食物的深度加工与文明进阶的底层逻辑。</description>
-    </item>
-    
-    <item>
-      <title>生育焦虑的背后</title>
-      <link>https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/</link>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      
-      <guid>https://worldcorner.xyz/posts/systems-thinking/fertility-anxiety/</guid>
-      <description>一场关于人何以为人的哲学对话，远远超越了人口统计学的范畴。</description>
-    </item>
-    
-    <item>
-      <title>经济学思维：看清世界的另一双眼睛</title>
-      <link>https://worldcorner.xyz/posts/learning/economic-thinking/</link>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      
-      <guid>https://worldcorner.xyz/posts/learning/economic-thinking/</guid>
-      <description>为什么钻石比水贵，水却比钻石重要？经济学的答案让你重新认识世界。</description>
     </item>
     
     <item>
@@ -900,21 +900,21 @@ Write 工具：/home/zhaotianbing/claude-memory → WSL 原生 FS → 文件孤�
     </item>
     
     <item>
-      <title>为什么现代人越休息越累？「能量失血」才是最大的骗局</title>
-      <link>https://worldcorner.xyz/posts/systems-thinking/pseudo-rest-cognitive-drain/</link>
-      <pubDate>Mon, 18 May 2026 21:42:52 +0800</pubDate>
-      
-      <guid>https://worldcorner.xyz/posts/systems-thinking/pseudo-rest-cognitive-drain/</guid>
-      <description>刷了三小时短视频、周末躺到下午两点、把《老友记》第十季又刷了一遍——周一早上你依然像被卡车碾过。问题出在哪？不是休息不够，是你根本不会休息。</description>
-    </item>
-    
-    <item>
       <title>当一个工程师决定用 AI 打造「个人内容工厂」：关于效率、规则与技术降维的真实实验</title>
       <link>https://worldcorner.xyz/posts/tooling/tool-sovereignty-occams-razor/</link>
       <pubDate>Mon, 18 May 2026 21:42:52 +0800</pubDate>
       
       <guid>https://worldcorner.xyz/posts/tooling/tool-sovereignty-occams-razor/</guid>
       <description>他用两天时间在 API 文档的迷宫中碰壁，又用 2 分钟完成了整条内容管线的贯通。这不是技术的胜利，而是一个个体对自己工具主权的夺回——在 API 的高墙下，真正的自由从不来自遵循规范，而来自对“轻量化”近乎偏执的坚持。</description>
+    </item>
+    
+    <item>
+      <title>为什么现代人越休息越累？「能量失血」才是最大的骗局</title>
+      <link>https://worldcorner.xyz/posts/systems-thinking/pseudo-rest-cognitive-drain/</link>
+      <pubDate>Mon, 18 May 2026 21:42:52 +0800</pubDate>
+      
+      <guid>https://worldcorner.xyz/posts/systems-thinking/pseudo-rest-cognitive-drain/</guid>
+      <description>刷了三小时短视频、周末躺到下午两点、把《老友记》第十季又刷了一遍——周一早上你依然像被卡车碾过。问题出在哪？不是休息不够，是你根本不会休息。</description>
     </item>
     
     <item>
@@ -972,21 +972,21 @@ Write 工具：/home/zhaotianbing/claude-memory → WSL 原生 FS → 文件孤�
     </item>
     
     <item>
-      <title>在系统的噪音中，重构灵魂的索引</title>
-      <link>https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/</link>
-      <pubDate>Fri, 01 May 2026 22:30:00 +0800</pubDate>
-      
-      <guid>https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/</guid>
-      <description>你打开一本书，或者点开一个课程的播放键。屏幕的光打在脸上，知识流进大脑，神经元开始构建新的突触。你感到充实。</description>
-    </item>
-    
-    <item>
       <title>社交关系的「API 接口」：为什么孤独沉思不能替代师徒对话</title>
       <link>https://worldcorner.xyz/posts/systems-thinking/2026-05-01-the-api-of-relationships/</link>
       <pubDate>Fri, 01 May 2026 22:30:00 +0800</pubDate>
       
       <guid>https://worldcorner.xyz/posts/systems-thinking/2026-05-01-the-api-of-relationships/</guid>
       <description>这个时代有一个隐性教条：「孤独即高级」。</description>
+    </item>
+    
+    <item>
+      <title>在系统的噪音中，重构灵魂的索引</title>
+      <link>https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/</link>
+      <pubDate>Fri, 01 May 2026 22:30:00 +0800</pubDate>
+      
+      <guid>https://worldcorner.xyz/posts/systems-thinking/soul-index-reconstruction-in-system-noise/</guid>
+      <description>你打开一本书，或者点开一个课程的播放键。屏幕的光打在脸上，知识流进大脑，神经元开始构建新的突触。你感到充实。</description>
     </item>
     
     <item>

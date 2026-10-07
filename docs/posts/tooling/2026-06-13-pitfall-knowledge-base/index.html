@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,7 +9,7 @@
 <meta name="description" content="踩过坑、修好坑、记住坑——同一个坑不踩第二次：症状、根因、修复、避免四步拆解 16 条真实踩坑。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/tooling/2026-06-13-pitfall-knowledge-base/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.544608da90aadc9e4c41ff9bc4725dbd15a48344b035c1f83074d719dab967c0.css" integrity="sha256-VEYI2pCq3J5MQf&#43;bxHJdvRWkg0SwNcH4MHTXGdq5Z8A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.df7d2f9e55d44087e578a215da77df5612701f5bd3bfadc3bf7c54d6728a00fd.css" integrity="sha256-330vnlXUQIfleKIV2nffVhJwH1vTv63Dv3xU1nKKAP0=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -19,7 +19,7 @@
 <link rel="mask-icon" href="https://worldcorner.xyz/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://worldcorner.xyz/posts/tooling/2026-06-13-pitfall-knowledge-base/">
+<link rel="alternate" hreflang="zh" href="https://worldcorner.xyz/posts/tooling/2026-06-13-pitfall-knowledge-base/">
 <noscript>
     <style>
         #theme-toggle,
@@ -51,6 +51,177 @@
     }
   }
 }
+</script>
+<script>
+(function () {
+  function init() {
+    var content = document.querySelector('.post-content') || document.querySelector('.pitfall-single');
+    if (!content) return;
+    var titleEl = document.querySelector('.post-title') || content.querySelector('h1');
+    var lang = (document.documentElement.getAttribute('lang') || 'zh').slice(0, 2);
+    var target = lang === 'en' ? 'zh' : 'en';
+    var S = {
+      btn: "🌐 AI 翻译",
+      back: "↩ 返回原文",
+      loading: "AI 翻译中…长文约需一分钟",
+      done: "AI 译文（机器翻译，仅供参考 · 由 worldcorner API 提供）",
+      fail: "翻译失败，请稍后再试"
+    };
+    var API = 'https://api.worldcorner.xyz/community/api/translate';
+    var btn = document.createElement('button');
+    btn.className = 'ai-tr-btn';
+    btn.type = 'button';
+    btn.textContent = S.btn;
+    document.body.appendChild(btn);
+
+    var panel = document.createElement('div');
+    panel.className = 'ai-tr-panel';
+    panel.hidden = true;
+    if (content.parentNode) content.parentNode.insertBefore(panel, content.nextSibling);
+
+    var state = 'orig';
+    var cache = null;
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function toHtml(t) {
+      return t.split(/\n\n+/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    }
+    function call(text) {
+      return fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target: target })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.error) throw new Error(j.error);
+        return j.translated;
+      });
+    }
+    function withRetry(fn, n) {
+      var p = fn();
+      for (var i = 0; i < (n || 1); i++) {
+        p = p.catch(function () { return new Promise(function (res) { setTimeout(res, 1500); }).then(fn); });
+      }
+      return p;
+    }
+    
+
+    function splitClient(text, max) {
+      var paras = text.split(/\n\n+/);
+      var chunks = [];
+      var buf = '';
+      for (var i = 0; i < paras.length; i++) {
+        var p = paras[i].trim();
+        if (!p) continue;
+        if (p.length > max) {
+          if (buf) { chunks.push(buf); buf = ''; }
+          for (var j = 0; j < p.length; j += max) chunks.push(p.slice(j, j + max));
+          continue;
+        }
+        if (buf && (buf + '\n\n' + p).length > max) { chunks.push(buf); buf = p; }
+        else buf = buf ? buf + '\n\n' + p : p;
+      }
+      if (buf) chunks.push(buf);
+      return chunks;
+    }
+    function fetchAll() {
+      if (cache) {
+        panel.innerHTML = (cache.title ? '<h1 class="ai-tr-title"></h1>' : '') + toHtml(cache.body);
+        if (cache.title) panel.querySelector('.ai-tr-title').textContent = cache.title;
+        var doneNote = document.createElement('p');
+        doneNote.className = 'ai-tr-note';
+        doneNote.textContent = S.done;
+        panel.appendChild(doneNote);
+        return Promise.resolve(cache);
+      }
+      var titleText = titleEl ? titleEl.innerText.trim() : '';
+      var chunks = splitClient(content.innerText.trim(), 650);
+      var results = new Array(chunks.length);
+      var done = 0;
+      var head = titleText ? '<h1 class="ai-tr-title"></h1>' : '';
+      var note = document.createElement('p');
+      note.className = 'ai-tr-note';
+      function render() {
+        var html = head;
+        for (var i = 0; i < results.length; i++) if (results[i]) html += toHtml(results[i]);
+        panel.innerHTML = html;
+        note.textContent = done < chunks.length ? done + '/' + chunks.length + ' · ' + S.loading : S.done;
+        panel.appendChild(note);
+      }
+      if (titleText) {
+        withRetry(function () { return call(titleText); }, 1).then(function (t) {
+          if (state === 'trans') { var h1 = panel.querySelector('.ai-tr-title'); if (h1) h1.textContent = t; }
+        }).catch(function () {});
+      }
+      var idx = 0;
+      function lane() {
+        return new Promise(function (resolve) {
+          function next() {
+            if (idx >= chunks.length) return resolve();
+            var i = idx++;
+            withRetry(function () { return call(chunks[i]); }, 2).then(function (t) {
+              results[i] = t; done++; render(); next();
+            }).catch(function () {
+              results[i] = '⚠ ' + S.fail; done++; render(); next();
+            });
+          }
+          next();
+        });
+      }
+      render();
+      return Promise.all([lane(), lane()]).then(function () {
+        cache = { title: titleText, body: results.join('\n\n') };
+        return cache;
+      });
+    }
+    btn.addEventListener('click', function () {
+      if (state === 'trans') {
+        state = 'orig';
+        panel.hidden = true;
+        content.style.display = '';
+        if (titleEl) titleEl.style.display = '';
+        btn.textContent = S.btn;
+        return;
+      }
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = S.loading;
+      if (state === 'orig') {
+        panel.hidden = false;
+        content.style.display = 'none';
+        if (titleEl) titleEl.style.display = 'none';
+        state = 'trans';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      fetchAll().then(function () {
+        state = 'trans';
+        btn.disabled = false;
+        btn.textContent = S.back;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = S.btn;
+        panel.innerHTML = '<p class="ai-tr-note">' + esc(S.fail) + '</p>';
+        panel.hidden = false;
+        state = 'orig';
+      });
+    });
+
+    var css = document.createElement('style');
+    css.textContent = [
+      '.ai-tr-btn{position:fixed;right:18px;bottom:18px;z-index:99;padding:9px 14px;border-radius:999px;',
+      'border:1px solid var(--secondary,#999);background:var(--theme,#fafafa);color:var(--primary,#111);',
+      'font-size:14px;cursor:pointer;opacity:.92;box-shadow:0 2px 10px rgba(0,0,0,.15);}',
+      '.ai-tr-btn:hover{opacity:1}',
+      '.ai-tr-btn:disabled{cursor:wait;opacity:.7}',
+      '.ai-tr-panel{border:1px dashed var(--secondary,#bbb);border-radius:8px;padding:18px 22px;margin:24px 0;line-height:1.8}',
+      '.ai-tr-panel[hidden]{display:none}',
+      '.ai-tr-note{font-size:12px;color:var(--secondary,#888);margin:0 0 12px}',
+      '.ai-tr-title{font-size:1.4em;margin:0 0 16px}'
+    ].join('');
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 <meta property="og:title" content="我整理了 16 条程序员真实踩坑，每条四步拆解：症状→根因→修复→避免" />
 <meta property="og:description" content="踩过坑、修好坑、记住坑——同一个坑不踩第二次：症状、根因、修复、避免四步拆解 16 条真实踩坑。" />
@@ -103,7 +274,7 @@
   ],
   "articleBody": "写了几年代码，发现自己踩过的坑有一个共同特点：修的时候花了好几个小时，但根因往往就一行代码的事。更气人的是，过几个月又踩一遍。\n于是我做了一件事：把踩过的坑按统一格式整理出来——每条固定四个段落：\n🩺 症状：你看到什么？ 🔬 根因：到底为什么出问题？ 🔧 修复：怎么做？ 🛡️ 怎么避免：下次怎么不踩？ 攒了 16 条，放在 GitHub 开源仓库里，也搭了个简单的展示站。\n举三条最有共鸣的 1. Git push SSL 握手失败 症状：git push 到 GitHub 每次报 SSL\/TLS handshake 失败\n根因：Git 没走系统代理，直连被墙\n修复：一行命令 —— git config --global http.proxy http:\/\/127.0.0.1:7897\n教训：新机器第一件事就是设全局 Git 代理，不要只给单个仓库设\n2. Python 缩进导致 140 行代码静默跳过 症状：AstrBot 微信公众号被动回复永远不执行，日志无任何报错\n根因：140 行被动回复代码缩进在了 if active_send_mode: 块内部（12 空格对齐），当 active_send_mode=False 时整个 if 块被跳过\n修复：代码提到 if 外面，和 if 同级缩进\n教训：Python 缩进错误在特定条件下才暴露——代码在，逻辑在，就是进不去。排查时先怀疑控制流缩进\n3. 公众号明文模式下回复被错误加密 症状：微信后台设为明文模式，AI 正常生成回复，日志无报错——但用户永远看不到\n根因：_maybe_encrypt() 函数用 nonce 和 timestamp 是否存在来判断要不要加密。但微信在明文模式的 POST URL 里也携带这两个参数（用于 URL 签名验证，不是加密开关）→ 条件为真 → 加密了 → 微信明文模式解密不了 → 静默丢弃\n修复：明文分支中 nonce = None; timestamp = None，同时增加类级别 _is_encrypted 标志做双重防护\n教训：加密函数不能靠 nonce\/timestamp 是否存在来判断模式——它们在明文模式下也存在\n全部 16 条踩坑 # 踩坑 核心教训 1 Git Push SSL 握手失败 新机先设 --global http.proxy 2 Python UTF-8 BOM 编码陷阱 encoding=\u0027utf-8\u0027 → \u0027utf-8-sig\u0027 3 公众号中文乱码 requests json= → data=json.dumps(ensure_ascii=False) 4 规划写完忘记 commit 规划完成立刻 commit，不等会话结束 5 docx 表格跨页断开 cantSplit=True 防止断表 6 Excel COM Save 静默失败 wb.Save() 静默失败必须用 SaveAs 7 Gitee 重复建仓库 建仓库前先查已有列表 8 TRIGGERS 多场景匹配漏读 多路由命中要 AND 合并全量加载 9 Cloudreve\/Cloudflare 上传超时 免费版 100s 超时，调小分块 10 Python 缩进导致代码静默跳过 检查控制流缩进 11 Gitee 镜像已配还手动 push 镜像自动同步，删冗余 remote 12 AstrBot XML 二次包装 完整 XML 被又包一层 → 嵌套 XML 13 公众号明文模式误加密 nonce\/timestamp 别当加密开关 14 Hugo 手写单篇跳全量构建 必须 hugo -d docs\/ -F（已犯 3 次\u002b） 15 sed 假阳性验证 grep -q 验证通过 ≠ 代码写对了 16 WSL Write 工具路径不一致 写完不验证 = 写了等于没写 链接 🌐 网站：https:\/\/worldcorner.xyz\/pitfalls\/ 📂 GitHub：https:\/\/github.com\/zhao818\/claude-memory\/tree\/master\/pitfalls 每条踩坑都是真实踩过的——不是因为聪明才写，是因为踩疼了才记住。欢迎补充你踩过的坑，一起把仓库养大。\n",
   "wordCount" : "216",
-  "inLanguage": "en",
+  "inLanguage": "zh",
   "datePublished": "2026-06-13 00:00:00 \u002b0000 UTC",
   "dateModified": "2026-06-13 00:00:00 \u002b0000 UTC",
   "author":{
@@ -161,6 +332,10 @@
                     </svg>
                 </button>
                 <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://worldcorner.xyz/en/" title="English"
+                            aria-label="English">En</a>
+                    </li>
                 </ul>
             </div>
         </div>
