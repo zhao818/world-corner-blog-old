@@ -9,7 +9,7 @@
 <meta name="description" content="三个月前我们用数学证明了这个项目不可能在雨季前完工。现在它停了——不是因为下雨，而是因为系统在设计之初就没有为&#39;坏消息&#39;预留传输通道。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/systems-thinking/2026-06-08-signal-loss-in-yongde/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.966b0d65fc66f98dbcc86e3741a7305fbcdd8eeee1f69836d5c4e8249dffba99.css" integrity="sha256-lmsNZfxm&#43;Y28yG43QacwX7zdju7h9pg21cToJJ3/upk=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -410,6 +410,18 @@
                 </a>
             </li>
             <li>
+                <a href="https://worldcorner.xyz/search/" title="搜索 (Alt &#43; /)" accesskey=/
+                class="nav-btn nav-menu-search">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://worldcorner.xyz/archives/" title="归档"
+                class="nav-btn nav-menu-archives">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://worldcorner.xyz/about/" title="关于"
                 class="nav-btn nav-menu-about">
                     <span>关于</span>
@@ -445,7 +457,31 @@ document.addEventListener('click', function (e) {
     <div class="post-meta"><span title='2026-06-08 23:00:00 +0800 +0800'>2026年6月8日</span>&nbsp;·&nbsp;Tianbing Zhao
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80%e9%a2%84%e8%a8%80%e8%90%bd%e5%9c%b0%e4%bb%8e36%e7%b1%b3%e5%a4%a9%e5%88%b0%e6%9a%82%e5%81%9c%e6%96%bd%e5%b7%a5" aria-label="一、预言落地：从36米/天到&quot;暂停施工&quot;">一、预言落地：从36米/天到&quot;暂停施工&quot;</a></li>
+                <li>
+                    <a href="#%e4%ba%8c%e4%bf%a1%e5%8f%b7%e4%b8%a2%e5%a4%b1%e5%bd%93sos%e8%a2%ab%e5%bd%93%e6%88%90%e6%97%a5%e5%b8%b8%e5%bf%83%e8%b7%b3%e5%8c%85" aria-label="二、信号丢失：当SOS被当成日常心跳包">二、信号丢失：当SOS被当成日常心跳包</a></li>
+                <li>
+                    <a href="#%e4%b8%89%e5%88%86%e5%b8%83%e5%bc%8f%e6%ad%bb%e9%94%81%e6%af%8f%e4%b8%80%e6%96%b9%e9%83%bd%e5%9c%a8%e7%ad%89%e5%88%ab%e4%ba%ba%e5%85%88%e5%8a%a8" aria-label="三、分布式死锁：每一方都在等别人先动">三、分布式死锁：每一方都在等别人先动</a></li>
+                <li>
+                    <a href="#%e5%9b%9b%e4%ba%ba%e9%81%93%e7%bc%93%e5%86%b2%e5%8c%ba%e7%b3%bb%e7%bb%9f%e5%b4%a9%e6%ba%83%e7%9a%84%e7%89%a9%e7%90%86%e4%bb%a3%e4%bb%b7" aria-label="四、人道缓冲区：系统崩溃的物理代价">四、人道缓冲区：系统崩溃的物理代价</a></li>
+                <li>
+                    <a href="#%e4%ba%94%e6%9e%b6%e6%9e%84%e8%a1%a5%e4%b8%81%e4%b8%80%e4%b8%aa%e9%a1%b9%e7%9b%ae%e5%ba%94%e8%af%a5%e6%9c%89%e7%9a%84%e4%ba%8b%e6%95%85%e5%93%8d%e5%ba%94%e5%8d%8f%e8%ae%ae" aria-label="五、架构补丁：一个项目应该有的事故响应协议">五、架构补丁：一个项目应该有的事故响应协议</a></li>
+                <li>
+                    <a href="#%e5%85%ad%e7%b3%bb%e7%bb%9f%e5%85%83%e9%97%ae%e9%a2%98%e8%b0%81%e4%b8%ba%e5%9d%8f%e6%b6%88%e6%81%af%e4%bb%98%e8%b4%b9" aria-label="六、系统元问题：谁为坏消息付费？">六、系统元问题：谁为坏消息付费？</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content md-content"><blockquote>
 <p>一个系统最危险的时刻不是它崩溃的那一刻，而是它在崩溃之前，所有的报警信号都被当成背景噪声处理了。</p></blockquote>
 <hr>
@@ -848,6 +884,12 @@ document.addEventListener('click', function (e) {
     </a>
     <a href="https://worldcorner.xyz/skills/" class="nav-btn nav-menu-skills">
       技能
+    </a>
+    <a href="https://worldcorner.xyz/search/" class="nav-btn nav-menu-search">
+      搜索
+    </a>
+    <a href="https://worldcorner.xyz/archives/" class="nav-btn nav-menu-archives">
+      归档
     </a>
     <a href="https://worldcorner.xyz/about/" class="nav-btn nav-menu-about">
       关于

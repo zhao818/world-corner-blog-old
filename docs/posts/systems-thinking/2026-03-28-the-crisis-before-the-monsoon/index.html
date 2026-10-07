@@ -9,7 +9,7 @@
 <meta name="description" content="2026年3月，云南永德县。22天铺设800米钢管——这是班老村片区交出的成绩单。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/systems-thinking/2026-03-28-the-crisis-before-the-monsoon/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.966b0d65fc66f98dbcc86e3741a7305fbcdd8eeee1f69836d5c4e8249dffba99.css" integrity="sha256-lmsNZfxm&#43;Y28yG43QacwX7zdju7h9pg21cToJJ3/upk=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -411,6 +411,18 @@
                 </a>
             </li>
             <li>
+                <a href="https://worldcorner.xyz/search/" title="搜索 (Alt &#43; /)" accesskey=/
+                class="nav-btn nav-menu-search">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://worldcorner.xyz/archives/" title="归档"
+                class="nav-btn nav-menu-archives">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://worldcorner.xyz/about/" title="关于"
                 class="nav-btn nav-menu-about">
                     <span>关于</span>
@@ -451,7 +463,41 @@ document.addEventListener('click', function (e) {
 </ul>
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80%e7%b3%bb%e7%bb%9f%e5%ba%95%e5%99%aa%e5%bd%93-kpi-%e4%bc%a0%e6%84%9f%e5%99%a8%e5%a4%b1%e6%95%88" aria-label="一、系统底噪：当 KPI 传感器失效">一、系统底噪：当 KPI 传感器失效</a></li>
+                <li>
+                    <a href="#%e4%ba%8c%e6%95%b0%e5%ad%a6%e5%8d%b1%e6%9c%ba36-%e5%88%b0-151-%e7%9a%84%e8%b7%b3%e8%b7%83" aria-label="二、数学危机：36 到 151 的跳跃">二、数学危机：36 到 151 的跳跃</a></li>
+                <li>
+                    <a href="#%e4%b8%89%e5%a4%a9%e6%b0%94%e6%98%af%e6%9c%80%e9%ab%98%e4%bc%98%e5%85%88%e7%ba%a7%e7%9a%84%e5%86%99%e6%ad%bb%e7%ba%a6%e6%9d%9f" aria-label="三、天气是最高优先级的写死约束">三、天气是最高优先级的写死约束</a></li>
+                <li>
+                    <a href="#%e5%9b%9b%e8%b5%84%e6%ba%90%e6%ad%bb%e9%94%81%e4%b8%8e%e4%bc%98%e5%85%88%e7%ba%a7%e7%bf%bb%e8%bd%ac" aria-label="四、资源死锁与优先级翻转">四、资源死锁与优先级翻转</a></li>
+                <li>
+                    <a href="#%e4%ba%94%e7%a0%b4%e5%b1%80%e8%b0%83%e5%ba%a6%e4%bb%a4%e7%9a%84%e5%9b%9b%e7%bb%b4%e9%87%8d%e6%9e%84" aria-label="五、破局：调度令的四维重构">五、破局：调度令的四维重构</a><ul>
+                        
+                <li>
+                    <a href="#%e7%bb%b4%e5%ba%a6%e4%b8%80%e5%8b%90%e6%9d%bf%e6%ad%bc%e7%81%ad%e6%88%984-%e6%9c%88-15-%e6%97%a5" aria-label="维度一：勐板歼灭战（4 月 15 日）">维度一：勐板歼灭战（4 月 15 日）</a></li>
+                <li>
+                    <a href="#%e7%bb%b4%e5%ba%a6%e4%ba%8c%e7%8f%ad%e8%80%81%e6%9d%91-4-%e9%9d%a2%e5%a4%b9%e5%87%bb4-%e6%9c%88-16-%e6%97%a5%e5%90%af%e5%8a%a8" aria-label="维度二：班老村 4 面夹击（4 月 16 日启动）">维度二：班老村 4 面夹击（4 月 16 日启动）</a></li>
+                <li>
+                    <a href="#%e7%bb%b4%e5%ba%a6%e4%b8%89%e5%a4%a7%e6%b2%9f%e5%9d%9d%e5%85%88%e5%af%bc4-%e6%9c%88-1-%e6%97%a5%e8%bf%9b%e5%9c%ba" aria-label="维度三：大沟坝先导（4 月 1 日进场）">维度三：大沟坝先导（4 月 1 日进场）</a></li>
+                <li>
+                    <a href="#%e7%bb%b4%e5%ba%a6%e5%9b%9b%e5%b4%87%e5%b2%97%e6%b0%b8%e5%ba%b7-7-%e5%a4%a9%e5%a1%ab%e5%9d%91" aria-label="维度四：崇岗/永康 7 天填坑">维度四：崇岗/永康 7 天填坑</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%85%ad%e5%8d%87%e5%8d%8e%e7%ae%a1%e7%90%86%e8%80%85%e7%9a%84%e8%ae%a4%e7%9f%a5%e8%bf%87%e6%bb%a4%e5%99%a8" aria-label="六、升华：管理者的认知过滤器">六、升华：管理者的认知过滤器</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content md-content"><p>2026年3月，云南永德县。22天铺设800米钢管——这是班老村片区交出的成绩单。</p>
 <p>项目经理看了摇头，业主代表看了皱眉，但没有人指出一个更底层的事实：<strong>这不是人的问题，是系统设计本身出了问题。</strong></p>
 <hr>
@@ -870,6 +916,12 @@ $$v_{120} = \frac{13600}{120} = 113.3 ; \text{米/天}$$</p>
     </a>
     <a href="https://worldcorner.xyz/skills/" class="nav-btn nav-menu-skills">
       技能
+    </a>
+    <a href="https://worldcorner.xyz/search/" class="nav-btn nav-menu-search">
+      搜索
+    </a>
+    <a href="https://worldcorner.xyz/archives/" class="nav-btn nav-menu-archives">
+      归档
     </a>
     <a href="https://worldcorner.xyz/about/" class="nav-btn nav-menu-about">
       关于

@@ -9,7 +9,7 @@
 <meta name="description" content="2 a.m. I&#39;m staring at n8n&#39;s workflow editor, two dozen drag-and-drop nodes snaking across the screen.">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/en/posts/tooling/farewell-efficiency-refugees/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.966b0d65fc66f98dbcc86e3741a7305fbcdd8eeee1f69836d5c4e8249dffba99.css" integrity="sha256-lmsNZfxm&#43;Y28yG43QacwX7zdju7h9pg21cToJJ3/upk=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -411,6 +411,18 @@
                 </a>
             </li>
             <li>
+                <a href="https://worldcorner.xyz/en/search/" title="Search"
+                class="nav-btn nav-menu-search">
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://worldcorner.xyz/en/archives/" title="Archives"
+                class="nav-btn nav-menu-archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://worldcorner.xyz/en/about/" title="About"
                 class="nav-btn nav-menu-about">
                     <span>About</span>
@@ -451,7 +463,27 @@ document.addEventListener('click', function (e) {
 </ul>
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#i-the-efficiency-refugees-in-your-bookmarks" aria-label="I. The &ldquo;Efficiency Refugees&rdquo; in Your Bookmarks">I. The &ldquo;Efficiency Refugees&rdquo; in Your Bookmarks</a></li>
+                <li>
+                    <a href="#ii-the-toxicity-of-tools-how-abstraction-layers-eat-your-cognitive-bandwidth" aria-label="II. The Toxicity of Tools: How Abstraction Layers Eat Your Cognitive Bandwidth">II. The Toxicity of Tools: How Abstraction Layers Eat Your Cognitive Bandwidth</a></li>
+                <li>
+                    <a href="#iii-the-way-out-code-as-a-cognitive-lever" aria-label="III. The Way Out: Code as a Cognitive Lever">III. The Way Out: Code as a Cognitive Lever</a></li>
+                <li>
+                    <a href="#iv-tool-symbiosis-humans-lead-tools-assist" aria-label="IV. Tool Symbiosis: Humans Lead, Tools Assist">IV. Tool Symbiosis: Humans Lead, Tools Assist</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content md-content"><p>2 a.m. I&rsquo;m staring at n8n&rsquo;s workflow editor, two dozen drag-and-drop nodes snaking across the screen.</p>
 <p>This tool, billed as a &ldquo;low-code automation miracle,&rdquo; consumed three evenings of my patience just to move a Markdown file from point A to point B. Dependency conflicts on install, a Docker image that wouldn&rsquo;t pull, some node timing out for no reason. Every click of &ldquo;test workflow&rdquo; fed my cognitive bandwidth to an abstraction layer that should never have existed.</p>
 <p>I stopped the n8n container. Then I wrote one line of Python.</p>
@@ -600,6 +632,12 @@ ten thousand perfect saved articles are the tombstone of your attention.</p></bl
     </a>
     <a href="https://worldcorner.xyz/en/skills/" class="nav-btn nav-menu-skills">
       Skills
+    </a>
+    <a href="https://worldcorner.xyz/en/search/" class="nav-btn nav-menu-search">
+      Search
+    </a>
+    <a href="https://worldcorner.xyz/en/archives/" class="nav-btn nav-menu-archives">
+      Archives
     </a>
     <a href="https://worldcorner.xyz/en/about/" class="nav-btn nav-menu-about">
       About

@@ -9,7 +9,7 @@
 <meta name="description" content="凌晨两点，我盯着 n8n 的 workflow 编辑器，屏幕上蜿蜒着二十几个拖拽节点。">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/tooling/farewell-efficiency-refugees/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.966b0d65fc66f98dbcc86e3741a7305fbcdd8eeee1f69836d5c4e8249dffba99.css" integrity="sha256-lmsNZfxm&#43;Y28yG43QacwX7zdju7h9pg21cToJJ3/upk=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -411,6 +411,18 @@
                 </a>
             </li>
             <li>
+                <a href="https://worldcorner.xyz/search/" title="搜索 (Alt &#43; /)" accesskey=/
+                class="nav-btn nav-menu-search">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://worldcorner.xyz/archives/" title="归档"
+                class="nav-btn nav-menu-archives">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://worldcorner.xyz/about/" title="关于"
                 class="nav-btn nav-menu-about">
                     <span>关于</span>
@@ -451,7 +463,27 @@ document.addEventListener('click', function (e) {
 </ul>
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80%e6%94%b6%e8%97%8f%e5%a4%b9%e9%87%8c%e7%9a%84%e6%95%88%e7%8e%87%e9%9a%be%e6%b0%91" aria-label="一、收藏夹里的&quot;效率难民&quot;">一、收藏夹里的&quot;效率难民&quot;</a></li>
+                <li>
+                    <a href="#%e4%ba%8c%e5%b7%a5%e5%85%b7%e7%9a%84%e6%af%92%e6%80%a7%e6%8a%bd%e8%b1%a1%e5%b1%82%e5%a6%82%e4%bd%95%e5%90%83%e6%8e%89%e4%bd%a0%e7%9a%84%e8%ae%a4%e7%9f%a5%e5%b8%a6%e5%ae%bd" aria-label="二、工具的毒性：抽象层如何吃掉你的认知带宽">二、工具的毒性：抽象层如何吃掉你的认知带宽</a></li>
+                <li>
+                    <a href="#%e4%b8%89%e7%a0%b4%e5%b1%80%e7%94%a8%e4%bb%a3%e7%a0%81%e4%bd%9c%e4%b8%ba%e8%ae%a4%e7%9f%a5%e6%9d%a0%e6%9d%86" aria-label="三、破局：用代码作为认知杠杆">三、破局：用代码作为认知杠杆</a></li>
+                <li>
+                    <a href="#%e5%9b%9b%e5%b7%a5%e5%85%b7%e5%85%b1%e7%94%9f%e4%ba%ba%e4%b8%bb%e5%af%bc%e5%b7%a5%e5%85%b7%e8%be%85%e4%bd%90" aria-label="四、工具共生：人主导，工具辅佐">四、工具共生：人主导，工具辅佐</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content md-content"><p>凌晨两点，我盯着 n8n 的 workflow 编辑器，屏幕上蜿蜒着二十几个拖拽节点。</p>
 <p>这个号称&quot;低代码自动化神器&quot;的工具，为了把一个 Markdown 文件从 A 点搬到 B 点，消耗了我三个晚上的耐心。安装依赖冲突、Docker 镜像拉不下来、某个 node 莫名其妙 timeout。每一次点击&quot;测试 workflow&quot;，都在用我的认知带宽去喂养一个本不该存在的抽象层。</p>
 <p>我把 n8n 的容器停了。然后写了一行 Python。</p>
@@ -657,6 +689,12 @@ document.addEventListener('click', function (e) {
     </a>
     <a href="https://worldcorner.xyz/skills/" class="nav-btn nav-menu-skills">
       技能
+    </a>
+    <a href="https://worldcorner.xyz/search/" class="nav-btn nav-menu-search">
+      搜索
+    </a>
+    <a href="https://worldcorner.xyz/archives/" class="nav-btn nav-menu-archives">
+      归档
     </a>
     <a href="https://worldcorner.xyz/about/" class="nav-btn nav-menu-about">
       关于

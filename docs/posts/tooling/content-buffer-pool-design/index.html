@@ -9,7 +9,7 @@
 <meta name="description" content="你每天打开多少次信息应用？">
 <meta name="author" content="Tianbing Zhao">
 <link rel="canonical" href="https://worldcorner.xyz/posts/tooling/content-buffer-pool-design/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3309987c96f934eeae78a07acd827499944625cf41149806889124bb4e82b782.css" integrity="sha256-MwmYfJb5NO6ueKB6zYJ0mZRGJc9BFJgGiJEku06Ct4I=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.966b0d65fc66f98dbcc86e3741a7305fbcdd8eeee1f69836d5c4e8249dffba99.css" integrity="sha256-lmsNZfxm&#43;Y28yG43QacwX7zdju7h9pg21cToJJ3/upk=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://worldcorner.xyz/favicon.ico">
@@ -410,6 +410,18 @@
                 </a>
             </li>
             <li>
+                <a href="https://worldcorner.xyz/search/" title="搜索 (Alt &#43; /)" accesskey=/
+                class="nav-btn nav-menu-search">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://worldcorner.xyz/archives/" title="归档"
+                class="nav-btn nav-menu-archives">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://worldcorner.xyz/about/" title="关于"
                 class="nav-btn nav-menu-about">
                     <span>关于</span>
@@ -445,7 +457,29 @@ document.addEventListener('click', function (e) {
     <div class="post-meta"><span title='2026-05-01 12:40:00 +0800 +0800'>2026年5月1日</span>&nbsp;·&nbsp;Tianbing Zhao
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80%e6%9e%b6%e6%9e%84push-%e4%bb%a3%e6%9b%bf-pull" aria-label="一、架构：Push 代替 Pull">一、架构：Push 代替 Pull</a></li>
+                <li>
+                    <a href="#%e4%ba%8c%e9%80%9a%e9%81%93%e4%b8%80gmail-%e9%82%ae%e4%bb%b6%e8%bf%87%e6%bb%a4%e5%99%a8" aria-label="二、通道一：Gmail 邮件过滤器">二、通道一：Gmail 邮件过滤器</a></li>
+                <li>
+                    <a href="#%e4%b8%89%e9%80%9a%e9%81%93%e4%ba%8ctelegram-%e6%b6%88%e6%81%af%e8%bd%ac%e5%8f%91%e5%99%a8" aria-label="三、通道二：Telegram 消息转发器">三、通道二：Telegram 消息转发器</a></li>
+                <li>
+                    <a href="#%e5%9b%9b%e7%bc%93%e5%86%b2%e5%a4%84%e7%90%86%e6%a8%a1%e5%bc%8f%e4%bb%8e%e6%94%b6%e4%bb%b6%e7%ae%b1%e5%88%b0%e5%ae%9a%e6%97%b6%e6%b7%b1%e6%bd%9c" aria-label="四、缓冲处理模式：从「收件箱」到「定时深潜」">四、缓冲处理模式：从「收件箱」到「定时深潜」</a></li>
+                <li>
+                    <a href="#%e4%ba%94%e5%b7%a5%e5%85%b7%e7%bb%b4%e5%ba%a6%e7%9a%84%e5%85%b1%e7%94%9f%e5%8f%8d%e6%80%9d" aria-label="五、工具维度的「共生」反思">五、工具维度的「共生」反思</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content md-content"><p>你每天打开多少次信息应用？</p>
 <p>Gmail 的红点、Telegram 群聊的未读、RSS 阅读器的计数、Slack 的频道。每一枚红点都是一次认知打断。每一次滑动刷新都是一次注意力税。</p>
 <blockquote>
@@ -690,6 +724,12 @@ document.addEventListener('click', function (e) {
     </a>
     <a href="https://worldcorner.xyz/skills/" class="nav-btn nav-menu-skills">
       技能
+    </a>
+    <a href="https://worldcorner.xyz/search/" class="nav-btn nav-menu-search">
+      搜索
+    </a>
+    <a href="https://worldcorner.xyz/archives/" class="nav-btn nav-menu-archives">
+      归档
     </a>
     <a href="https://worldcorner.xyz/about/" class="nav-btn nav-menu-about">
       关于
