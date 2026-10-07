@@ -2,10 +2,10 @@
 <footer class="footer">
     <span>&copy; {{ now.Year }} <a href="{{ "" | absLangURL }}">{{ site.Title }}</a></span>
     <span>
-        由
+        {{ i18n "poweredByPre" }}
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-        驱动
+        {{ i18n "poweredByPost" }}
     </span>
 </footer>
 {{- end }}

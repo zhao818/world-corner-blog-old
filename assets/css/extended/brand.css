@@ -572,3 +572,8 @@ html {
     grid-template-columns: 1fr;
   }
 }
+
+/* 英文站署名覆盖（Hugo 多语言：html[lang="en"]） */
+html[lang="en"] .home-hero .hero-slogan::after {
+  content: "—— World Corner · Cognitive Energy Engineering";
+}
