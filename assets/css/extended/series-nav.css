@@ -204,6 +204,26 @@
     border-color: rgba(103, 232, 249, 0.50);
 }
 
+/* 社区 — lime */
+.nav-menu-community {
+    background: rgba(132, 204, 22, 0.12);
+    color: #65a30d;
+    border: 1px solid rgba(132, 204, 22, 0.25);
+}
+.nav-menu-community:hover {
+    background: rgba(132, 204, 22, 0.22);
+    border-color: rgba(132, 204, 22, 0.45);
+}
+.dark .nav-menu-community {
+    background: rgba(163, 230, 53, 0.16);
+    color: #bef264;
+    border-color: rgba(163, 230, 53, 0.30);
+}
+.dark .nav-menu-community:hover {
+    background: rgba(163, 230, 53, 0.28);
+    border-color: rgba(163, 230, 53, 0.50);
+}
+
 /* ===== Series Sidebar ===== */
 .post-with-sidebar {
     display: flex;
